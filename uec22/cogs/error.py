@@ -53,4 +53,7 @@ class ErrorCatch(commands.Cog):
             content = f"Botの権限が不足しています。\n```{perms}```"
         else:
             content = f"不明なエラーが発生しました。\n```{error}```"
-        await ctx.reply(content=content)
+        try:
+            await ctx.reply(content=content)
+        except Exception:
+            traceback.print_exc()
