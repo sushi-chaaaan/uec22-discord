@@ -8,6 +8,7 @@ from datetime import datetime, timezone, timedelta
 import discord
 from discord.ext import commands
 
+
 logging.basicConfig(level=logging.INFO)
 
 utc = timezone.utc
@@ -16,7 +17,11 @@ jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 token = ""
 
 # Load when start bot
-EXTENSION_LIST = ["uec22.cogs.error", "uec22.cogs.pin", "uec22.cogs.role_panel"]
+EXTENSION_LIST = [
+    "uec22.cogs.error",
+    "uec22.cogs.pin",
+    "uec22.cogs.role_panel",
+]
 
 PERSISTENT_VIEWS = []
 
@@ -51,7 +56,7 @@ class MyBot(commands.Bot):
         if self.user is None:
             info = "cannot get my own infomation."
         else:
-            info = f"Logged in as {self.user} (ID:{self.user.id})\nNow: {datetime.utcnow().astimezone(jst).strftime('%Y/%m/%d %H:%M:%S')}\nLibrary version: {discord.__version__}\nPython Info:{sys.version}"
+            info = f"Logged in as {self.user} (ID:{self.user.id})\nNow: {discord.utils.utcnow().astimezone(jst).strftime('%Y/%m/%d %H:%M:%S')}\nLibrary version: {discord.__version__}\nPython Info:{sys.version}"
         print("------------------------------------------------------")
         print(info)
         print("------------------------------------------------------")

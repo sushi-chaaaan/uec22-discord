@@ -1,3 +1,6 @@
+import asyncio
+import tarfile
+import traceback
 import discord
 from discord import utils
 from discord.ext import commands
@@ -20,14 +23,40 @@ class ReactRole(commands.Cog):
         roles = [ctx.guild.get_role(int(role)) for role in role_id]
 
         # make modal button
-        modal_view = PanelModal(roles)
+        modal_view = PanelModal(roles, target)
         await ctx.reply(content="ボタンを押してパネルの説明を入力してください。", view=modal_view)
         pass
 
+    @commands.Cog.listener("on_interaction")
+    async def _add_remove_role(self, interaction: discord.Interaction):
+        if interaction.custom_id is None:
+            return
+        role_id = int(interaction.custom_id.removeprefix("role_button_"))
+        try:
+            interaction.guild.get_role(role_id)
+        except Exception:
+            traceback.print_exc()
+            return
+        else:
+            role = interaction.guild.get_role(role_id)
+            if role is None:
+                print("no such role")
+                return
+            user = interaction.user
+            if role not in user.roles:
+                await user.add_roles(role)
+                embed = RoleEmbed(role).add_embed()
+                await interaction.followup.send(embeds=[embed], ephemeral=True)
+            else:
+                await user.remove_roles(role)
+                embed = RoleEmbed(role).remove_embed()
+                await interaction.followup.send(embeds=[embed], ephemeral=True)
+
 
 class PanelModal(discord.ui.View):
-    def __init__(self, roles: list[discord.Role]):
+    def __init__(self, roles: list[discord.Role], target: discord.TextChannel):
         self.roles = roles
+        self.target = target
         super().__init__(timeout=None)
         pass
 
@@ -35,12 +64,15 @@ class PanelModal(discord.ui.View):
     async def panel_modal(
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
-        await interaction.response.send_modal(RolePanelModal(roles=self.roles))
+        await interaction.response.send_modal(
+            RolePanelModal(roles=self.roles, target=self.target)
+        )
 
 
 class RolePanelModal(Modal):
-    def __init__(self, roles: list[discord.Role]) -> None:
+    def __init__(self, roles: list[discord.Role], target: discord.TextChannel) -> None:
         self.roles = roles
+        self.target = target
         super().__init__(title="ロールパネルメッセージ入力")
         self.add_item(
             InputText(
@@ -53,18 +85,54 @@ class RolePanelModal(Modal):
 
     async def callback(self, interaction: discord.Interaction):
         # make button View(disabled)
-        panel_view = Dis_RolePanel(roles=self.roles)
+        _panel_view = Dis_RolePanel(roles=self.roles)
+        panel_view = RolePanel(roles=self.roles)
         embed = discord.Embed(
             title="ロールパネル",
             description=self.children[0].value,
             color=3447003,
             timestamp=utils.utcnow(),
         )
+        embed.set_footer(text="付与/解除したいロールのボタンを押してください。")
         await interaction.response.send_message(
-            content="以下の内容でロールパネルを作成しますか？", embeds=[embed], view=panel_view
+            content="以下の内容でロールパネルを作成しますか？", embeds=[embed], view=_panel_view
         )
         message: discord.Message = await interaction.original_message()
-        pass
+        future = asyncio.Future()
+        await message.reply(view=Confirm(future=future))
+        await future
+        if future.done():
+            if future.result() is True:
+                await self.target.send(embeds=[embed], view=panel_view)
+            else:
+                pass
+            return
+
+
+class Confirm(discord.ui.View):
+    def __init__(self, future: asyncio.Future):
+        self.future = future
+        super().__init__(timeout=None)
+
+    @discord.ui.button(
+        label="する", custom_id="role_panel_accept", style=discord.ButtonStyle.blurple
+    )
+    async def _accept(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        self.future.set_result(True)
+        await interaction.response.send_message(content="ロールパネルの作成を開始します。")
+        return
+
+    @discord.ui.button(
+        label="しない", custom_id="role_panel_reject", style=discord.ButtonStyle.blurple
+    )
+    async def _reject(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        self.future.set_result(False)
+        await interaction.response.send_message(content="ロールパネルの作成をキャンセルしました。")
+        await interaction.message.delete(delay=None)
 
 
 class RolePanel(discord.ui.View):
@@ -94,23 +162,7 @@ class RoleButton(discord.ui.Button):
         )
 
     async def callback(self, interaction: discord.Interaction):
-        user = interaction.user
-        if interaction.guild is None:
-            return
-        role = interaction.guild.get_role(int(self.role.id))
-        if role is None:
-            print("No such role")
-            return
-
-        # add/remove role
-        if role not in user.roles:
-            await user.add_roles(role)
-            embed = RoleEmbed(role).add_embed()
-            await interaction.response.send_message(embeds=[embed], ephemeral=True)
-        else:
-            await user.remove_roles(role)
-            embed = RoleEmbed(role).remove_embed()
-            await interaction.response.send_message(embeds=[embed], ephemeral=True)
+        await interaction.response.defer()
 
 
 class RoleEmbed:
@@ -120,9 +172,8 @@ class RoleEmbed:
     def add_embed(self) -> discord.Embed:
         embed = discord.Embed(
             title="ロール付与完了",
-            description=f"{self.role.mention} を付与しました。\nロールを外したい場合はもう一度ロールのボタンを押すことで外すことが可能です。",
+            description=f"{self.role.mention} を付与しました。\nロールを外したい場合はもう一度\nロールのボタンを押すことで外すことが可能です。",
             color=3447003,
-            timestamp=utils.utcnow(),
         )
         return embed
 
@@ -131,7 +182,6 @@ class RoleEmbed:
             title="ロール解除完了",
             description=f"{self.role.mention} を解除しました。\nロールを再度付与したい場合はもう一度ロールのボタンを押すことで再度付与することが可能です。",
             color=3447003,
-            timestamp=utils.utcnow(),
         )
         return embed
 
