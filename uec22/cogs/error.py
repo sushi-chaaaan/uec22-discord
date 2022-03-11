@@ -1,6 +1,4 @@
-import os
 import traceback
-from datetime import datetime, timedelta, timezone
 
 import discord
 from discord.ext import commands
@@ -10,12 +8,19 @@ class ErrorCatch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    # called when an error
     @commands.Cog.listener(name="on_error")
     async def _on_err(self, event: str, *args, **kwargs):
         pass
 
+    # called when an error related to discord.ext.commands occurred
     @commands.Cog.listener(name="on_command_error")
     async def _on_cmd_err(self, ctx: commands.Context, error: commands.CommandError):
+        # make error ID
+        error_id = ctx.message.id
+        print(f"on_command_error:\n{error_id}")
+
+        # check error case
         if isinstance(error, commands.MissingRequiredArgument):
             content = f"コマンドの実行に必要なパラメータが指定されていません。\n不足したパラメータ:{error.param.name}"
         elif isinstance(error, commands.BadArgument):
@@ -53,7 +58,32 @@ class ErrorCatch(commands.Cog):
             content = f"Botの権限が不足しています。\n```{perms}```"
         else:
             content = f"不明なエラーが発生しました。\n```{error}```"
+        content = content + f"\nID: {error_id}"
         try:
             await ctx.reply(content=content)
         except Exception:
+            pass
+        finally:
             traceback.print_exc()
+
+    # called when an error related in app_command occurred
+    @commands.Cog.listener(name="on_application_command_error")
+    async def _on_app_cmd_err(
+        self, ctx: discord.ApplicationContext, exception: Exception
+    ):
+        # make error ID
+        error_id = ctx.interaction.id
+        print(f"app_command_error\nID: {error_id}")
+
+        try:
+            await ctx.respond(
+                content=f"予期せぬエラーが発生しました。\nID: {error_id}", ephemeral=False
+            )
+        except Exception:
+            pass
+        finally:
+            traceback.print_exc()
+
+
+def setup(bot):
+    return bot.add_cog(ErrorCatch(bot))
