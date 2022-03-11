@@ -13,16 +13,22 @@ logging.basicConfig(level=logging.INFO)
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
+token = ""
+
+# Load when start bot
 EXTENSION_LIST = []
 
 PERSISTENT_VIEWS = []
 
-token = ""
+
+# Intent
+intents = discord.Intents.default()
+intents.typing = False
 
 
 class MyBot(commands.Bot):
     def __init__(self, command_prefix="!ue", **options):
-        super().__init__(command_prefix, **options)
+        super().__init__(command_prefix, intents=intents, **options)
         self.persistent_views_added = False
         for cog in EXTENSION_LIST:
             try:
@@ -31,6 +37,7 @@ class MyBot(commands.Bot):
             except Exception:
                 traceback.print_exc()
 
+    # run when boot is done preparing to run.
     async def on_ready(self):
         if not self.persistent_views_added:
             for view in PERSISTENT_VIEWS:
