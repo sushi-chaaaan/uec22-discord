@@ -16,7 +16,7 @@ jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 token = ""
 
 # Load when start bot
-EXTENSION_LIST = []
+EXTENSION_LIST = ["uec22.cogs.error", "uec22.cogs.pin", "uec22.cogs.role_panel"]
 
 PERSISTENT_VIEWS = []
 
@@ -49,12 +49,12 @@ class MyBot(commands.Bot):
             self.persistent_views_added = True
         info = ""
         if self.user is None:
-            print("cannot get self.user")
+            info = "cannot get my own infomation."
         else:
             info = f"Logged in as {self.user} (ID:{self.user.id})\nNow: {datetime.utcnow().astimezone(jst).strftime('%Y/%m/%d %H:%M:%S')}\nLibrary version: {discord.__version__}\nPython Info:{sys.version}"
-            print("------------------------------------------------------")
-            print(info)
-            print("------------------------------------------------------")
+        print("------------------------------------------------------")
+        print(info)
+        print("------------------------------------------------------")
         channel = self.get_channel(951165574237532200)
         if isinstance(channel, discord.TextChannel):
             await channel.send(f"```{info}```")
