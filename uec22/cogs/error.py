@@ -8,6 +8,10 @@ class ErrorCatch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command(name="err_test")
+    async def _err_tst(self, ctx: commands.Context):
+        prin("test")
+
     # called when an error
     @commands.Cog.listener(name="on_error")
     async def _on_err(self, event: str, *args, **kwargs):
