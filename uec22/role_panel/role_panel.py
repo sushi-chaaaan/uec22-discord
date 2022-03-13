@@ -1,8 +1,8 @@
 import asyncio
-import tarfile
 import traceback
+from typing import Optional
+
 import discord
-from discord import utils
 from discord.ext import commands
 from discord.ui import InputText, Modal
 
@@ -13,8 +13,14 @@ class ReactRole(commands.Cog):
 
     @commands.command(name="role-panel")
     async def _role_panel(
-        self, ctx: commands.Context, target: discord.TextChannel, *role_id: str
+        self,
+        ctx: commands.Context,
+        target: Optional[discord.TextChannel] = None,
+        *role_id: str,
     ):
+        if target is None:
+            await ctx.reply(content="送信先チャンネルのIDを指定してください。")
+            return
         if len(role_id) > 6:
             await ctx.reply(
                 content="一度に指定できるロールの数は5つまでです。\n6つ以上指定したい場合は、２つ以上のパネルに分けてください。"
@@ -26,31 +32,6 @@ class ReactRole(commands.Cog):
         modal_view = PanelModal(roles, target)
         await ctx.reply(content="ボタンを押してパネルの説明を入力してください。", view=modal_view)
         pass
-
-    @commands.Cog.listener("on_interaction")
-    async def _add_remove_role(self, interaction: discord.Interaction):
-        if interaction.custom_id is None:
-            return
-        role_id = int(interaction.custom_id.removeprefix("role_button_"))
-        try:
-            interaction.guild.get_role(role_id)
-        except Exception:
-            traceback.print_exc()
-            return
-        else:
-            role = interaction.guild.get_role(role_id)
-            if role is None:
-                print("no such role")
-                return
-            user = interaction.user
-            if role not in user.roles:
-                await user.add_roles(role)
-                embed = RoleEmbed(role).add_embed()
-                await interaction.followup.send(embeds=[embed], ephemeral=True)
-            else:
-                await user.remove_roles(role)
-                embed = RoleEmbed(role).remove_embed()
-                await interaction.followup.send(embeds=[embed], ephemeral=True)
 
 
 class PanelModal(discord.ui.View):
@@ -91,7 +72,6 @@ class RolePanelModal(Modal):
             title="ロールパネル",
             description=self.children[0].value,
             color=3447003,
-            timestamp=utils.utcnow(),
         )
         embed.set_footer(text="付与/解除したいロールのボタンを押してください。")
         await interaction.response.send_message(
@@ -121,6 +101,7 @@ class Confirm(discord.ui.View):
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
         self.future.set_result(True)
+        await interaction.message.edit(view=Dis_Confirm())
         await interaction.response.send_message(content="ロールパネルの作成を開始します。")
         return
 
@@ -135,12 +116,30 @@ class Confirm(discord.ui.View):
         await interaction.message.delete(delay=None)
 
 
-class RolePanel(discord.ui.View):
-    def __init__(self, roles: list[discord.Role]):
-        role_buttons = [RoleButton(role) for role in roles]
+class Dis_Confirm(discord.ui.View):
+    def __init__(self):
         super().__init__(timeout=None)
-        for button in role_buttons:
-            self.add_item(button)
+
+    @discord.ui.button(label="する", style=discord.ButtonStyle.blurple, disabled=True)
+    async def _accept(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        pass
+
+    @discord.ui.button(label="しない", style=discord.ButtonStyle.blurple, disabled=True)
+    async def _reject(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        pass
+
+
+class RolePanel(discord.ui.View):
+    def __init__(self, roles: Optional[list[discord.Role]] = None):
+        super().__init__(timeout=None)
+        if roles is not None:
+            role_buttons = [RoleButton(role) for role in roles]
+            for button in role_buttons:
+                self.add_item(button)
 
 
 class Dis_RolePanel(discord.ui.View):
@@ -162,7 +161,15 @@ class RoleButton(discord.ui.Button):
         )
 
     async def callback(self, interaction: discord.Interaction):
-        await interaction.response.defer()
+        user = interaction.user
+        if self.role not in user.roles:
+            await user.add_roles(self.role)
+            embed = RoleEmbed(self.role).add_embed()
+            await interaction.response.send_message(embeds=[embed], ephemeral=True)
+        else:
+            await user.remove_roles(self.role)
+            embed = RoleEmbed(self.role).remove_embed()
+            await interaction.response.send_message(embeds=[embed], ephemeral=True)
 
 
 class RoleEmbed:
