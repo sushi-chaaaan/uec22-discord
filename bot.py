@@ -9,7 +9,7 @@ from datetime import datetime, timezone, timedelta
 import discord
 from discord.ext import commands
 
-from uec22.role_panel.role_panel import RolePanel
+from uec22.role_panel.role_panel_old import RolePanel
 from data.firestore import db
 
 
