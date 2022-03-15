@@ -1,34 +1,10 @@
 import asyncio
 import discord
-from discord.ui import View
 from typing import Optional
 
 
-class Confirm(View):
-    def __init__(
-        self,
-        future: asyncio.Future,
-        custom_id: str,
-        timeout: Optional[float] = None,
-        label: Optional[str] = None,
-    ):
-        super().__init__(timeout=timeout)
-        self.add_item(
-            Confirm_Button(
-                mode=True,
-                future=future,
-                custom_id=custom_id,
-                label=label,
-            )
-        )
-        self.add_item(
-            Confirm_Button(
-                mode=False,
-                future=future,
-                custom_id=custom_id,
-                label=label,
-            )
-        )
+# 基本的に await asyncio.Future()な形で運用する前提です。
+# いい感じにViewに Accept_ButtonとReject_Buttonをくっつけてあげてください
 
 
 class Accept_Button(discord.ui.Button):

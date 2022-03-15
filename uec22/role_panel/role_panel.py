@@ -12,6 +12,7 @@ class RolePanel(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    # パネル作成コマンド
     @commands.command(name="role-panel")
     @commands.guild_only()
     async def _role_panel(
@@ -84,6 +85,7 @@ class RolePanel(commands.Cog):
                     await conf_msg.reply(content="パネルの作成をキャンセルしました。")
 
 
+# 作成確認用View
 class PanelCheckView(discord.ui.View):
     def __init__(self, future: asyncio.Future, timeout: Optional[float] = None):
         super().__init__(timeout=timeout)
@@ -91,6 +93,7 @@ class PanelCheckView(discord.ui.View):
         self.add_item(Reject_Button(label="キャンセル", future=future))
 
 
+# パネル説明入力View
 class PanelModalView(discord.ui.View):
     def __init__(self, future: asyncio.Future):
         self.future = future
@@ -104,6 +107,7 @@ class PanelModalView(discord.ui.View):
         await interaction.response.send_modal(RolePanelModal(future=self.future))
 
 
+# パネル説明入力用Modal
 class RolePanelModal(Modal):
     def __init__(self, future: asyncio.Future) -> None:
         self.future = future
@@ -122,6 +126,7 @@ class RolePanelModal(Modal):
         await interaction.response.defer()
 
 
+# ロールパネル本体のView
 class RolePanelView(discord.ui.View):
     def __init__(self, roles: list[discord.Role], disabled: bool = False):
         super().__init__(timeout=None)
@@ -130,6 +135,7 @@ class RolePanelView(discord.ui.View):
             self.add_item(button)
 
 
+# ロールパネルのボタン
 class RoleButton(discord.ui.Button):
     def __init__(self, role: discord.Role, **kwargs):
         self.role = role
@@ -155,6 +161,7 @@ class RoleButton(discord.ui.Button):
             await interaction.response.send_message(embeds=[embed], ephemeral=True)
 
 
+# ここから下はEmbedObjectを作るやつ
 class PanelEmbed:
     def start(self) -> Embed:
         embed = Embed(
@@ -203,5 +210,6 @@ class RoleEmbed:
         return embed
 
 
+# Cogとして追加
 def setup(bot):
     return bot.add_cog(RolePanel(bot))
