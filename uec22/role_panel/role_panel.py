@@ -142,6 +142,9 @@ class RoleButton(discord.ui.Button):
 
     async def callback(self, interaction: discord.Interaction):
         user = interaction.user
+        if not isinstance(user, discord.Member):
+            print("TypeError in Make Role Button")
+            return
         if self.role not in user.roles:
             await user.add_roles(self.role)
             embed = RoleEmbed(self.role).add_embed()
