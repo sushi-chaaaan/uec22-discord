@@ -50,7 +50,8 @@ class Accept_Button(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction):
         self.future.set_result([True, interaction])
         await interaction.response.defer()
-        await interaction.message.delete()
+        if interaction.message is not None:
+            await interaction.message.delete()
 
 
 class Reject_Button(discord.ui.Button):
@@ -72,7 +73,8 @@ class Reject_Button(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction):
         self.future.set_result([False, interaction])
         await interaction.response.defer()
-        await interaction.message.delete()
+        if interaction.message is not None:
+            await interaction.message.delete()
 
 
 class Confirm_Button(discord.ui.Button):
