@@ -142,14 +142,6 @@ class RolePanel(discord.ui.View):
                 self.add_item(button)
 
 
-class Dis_RolePanel(discord.ui.View):
-    def __init__(self, roles: list[discord.Role]):
-        role_buttons = [RoleButton(role, disabled=True) for role in roles]
-        super().__init__(timeout=None)
-        for button in role_buttons:
-            self.add_item(button)
-
-
 class RoleButton(discord.ui.Button):
     def __init__(self, role: discord.Role, **kwargs):
         self.role = role
