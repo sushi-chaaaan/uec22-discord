@@ -9,7 +9,6 @@ from datetime import datetime, timezone, timedelta
 import discord
 from discord.ext import commands
 
-from uec22.role_panel.role_panel_old import RolePanel
 from data.firestore import db
 
 
@@ -29,7 +28,7 @@ EXTENSION_LIST = [
 
 PERSISTENT_VIEWS = []
 
-ROLE_PANEL = [RolePanel]
+ROLE_PANEL = []
 
 discord.http.API_VERSION = 9
 
@@ -65,9 +64,7 @@ class MyBot(commands.Bot):
                 _roles = []
                 _role_1 = _guild.get_role(int(panel["role_1"]))
                 _roles.append(_role_1)
-                self.add_view(
-                    RolePanel(roles=_roles), message_id=int(panel["message_id"])
-                )
+                # self.add_view(RolePanel(roles=_roles), message_id=int(panel["message_id"]))
             self.persistent_views_added = True
         info = ""
         if self.user is None:
