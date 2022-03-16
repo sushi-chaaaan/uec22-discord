@@ -30,7 +30,7 @@ class RolePanel(commands.Cog):
             return
         if len(role_id) > 6:
             await ctx.reply(
-                content="一度に指定できるロールの数は5つまでです。\n6つ以上指定したい場合は、２つ以上のパネルに分けてください。"
+                content="一度に指定できるロールの数は5つまでです。\n6つ以上指定したい場合は、2つ以上のパネルに分けてください。"
             )
             return
         # get role
