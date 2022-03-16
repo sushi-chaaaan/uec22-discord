@@ -10,11 +10,11 @@ class Pin(commands.Cog):
 
     @message_command(guild_ids=[guild_id], name="ピン留めする")
     async def _pin(self, ctx: discord.ApplicationContext, message: discord.Message):
-        available_types = [
+        available_types = (
             discord.MessageType.default,
             discord.MessageType.application_command,
             discord.MessageType.context_menu_command,
-        ]
+        )
         if message.type not in available_types:
             await ctx.respond("システムメッセージをピン留めすることはできません！", ephemeral=True)
             return
