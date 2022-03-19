@@ -17,6 +17,3 @@ async def set_board(bot: commands.Bot, panel: dict[Any, Any]) -> None:
         else:
             continue
     bot.add_view(RolePanelView(roles=_roles), message_id=int(panel["message_id"]))
-
-
-
