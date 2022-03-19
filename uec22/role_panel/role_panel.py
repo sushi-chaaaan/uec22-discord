@@ -88,7 +88,7 @@ class RolePanel(commands.Cog):
                         except Exception:
                             db_dict[f"role_{num+1}"] = ""
                     set_data(message_id=str(panel_msg.channel.id), data=db_dict)
-                    await conf_msg.reply("uploaded to DB")
+                    # await conf_msg.reply("uploaded to DB")
                     # upload to DB
                 else:
                     # cancel
