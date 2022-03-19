@@ -2,7 +2,6 @@ from discord.ext import commands
 from typing import Any
 
 from uec22.role_panel.role_panel import RolePanelView
-from data.firestore import add_data
 
 
 async def set_board(bot: commands.Bot, panel: dict[Any, Any]) -> None:
