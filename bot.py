@@ -1,22 +1,22 @@
 import logging
 import os
-import traceback
 import sys
-
-from datetime import datetime, timezone, timedelta
+import traceback
+from datetime import datetime, timedelta, timezone
+from typing import Any
 
 import discord
 from discord.ext import commands
 
-from data.firestore import db
-
+from data.firestore import db, get_data
+from uec22.role_panel.panel_db import set_board
 
 logging.basicConfig(level=logging.INFO)
 
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
-token = ""
+token = "OTUxMTY3NTU0MjUxMDIyMzU2.Yijh0A.g_m7bNeb2IVi6iOYwx_E1b--qLI"
 
 # Load when start bot
 EXTENSION_LIST = [
@@ -56,13 +56,10 @@ class MyBot(commands.Bot):
                     print(f"Added View [{view}] !")
                 except Exception:
                     traceback.print_exc()
-            panels = db.collection("role_panel").get()
+            # list[dict[Any, Any]]
+            panels: list[dict[Any, Any]] = get_data(collection="role_panel")
             for panel in panels:
-                panel = panel.to_dict()
-                _guild = await self.fetch_guild(int(panel["guild_id"]))
-                _roles = []
-                _role_1 = _guild.get_role(int(panel["role_1"]))
-                _roles.append(_role_1)
+                await set_board(self, panel)
                 # self.add_view(RolePanel(roles=_roles), message_id=int(panel["message_id"]))
             self.persistent_views_added = True
         info = ""

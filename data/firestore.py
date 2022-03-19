@@ -1,8 +1,10 @@
+import traceback
 from typing import Any
 import discord
 import firebase_admin
 from discord.ext import commands, tasks
 from firebase_admin import credentials, firestore
+
 
 cred = credentials.Certificate(
     "data/uec22-discord-firebase-adminsdk-8gyuv-b0189dec6c.json"
@@ -18,6 +20,19 @@ def get_data(collection: str) -> list[dict[Any, Any]]:
         data_model.append(data.to_dict())
 
     return data_model
+
+
+def add_data(collection: str, document: str, data: dict):
+    try:
+        db.collection(collection).document(document).set(data)
+    except Exception:
+        traceback.print_exc()
+
+
+# print(get_data(collection="role_panel"))
+
+# for num in range(5):
+#     print(num)
 
 
 class FireStoreTask(commands.Cog):

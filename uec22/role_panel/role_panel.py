@@ -6,6 +6,7 @@ from discord import Embed
 from discord.ext import commands
 from discord.ui import InputText, Modal
 from uec22.snippets.confirm_button import Accept_Button, Reject_Button
+from data.firestore import add_data
 
 
 class RolePanel(commands.Cog):
@@ -76,13 +77,26 @@ class RolePanel(commands.Cog):
                         ]
                     )
                     # prepare data for DB
-                    db_guild_id: int = ctx.guild.id
-                    db_channel_id: int = panel_msg.channel.id
-                    db_message_id: int = panel_msg.id
-                    db_role_ids: tuple[str] = role_id
+                    db_dict = {
+                        "guild_id": str(ctx.guild.id),
+                        "channel_id": str(panel_msg.channel.id),
+                        "message_id": str(panel_msg.id),
+                    }
+                    for num in range(5):
+                        try:
+                            db_dict[f"role_{num+1}"] = role_id[num]
+                        except Exception:
+                            db_dict[f"role_{num+1}"] = ""
+                    set_data(message_id=str(panel_msg.channel.id), data=db_dict)
+                    await conf_msg.reply("uploaded to DB")
+                    # upload to DB
                 else:
                     # cancel
                     await conf_msg.reply(content="パネルの作成をキャンセルしました。")
+
+
+def set_data(message_id: str, data: dict) -> None:
+    add_data(collection="role_panel", document=message_id, data=data)
 
 
 # 作成確認用View
