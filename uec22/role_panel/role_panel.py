@@ -87,7 +87,7 @@ class RolePanel(commands.Cog):
                             db_dict[f"role_{num+1}"] = role_id[num]
                         except Exception:
                             db_dict[f"role_{num+1}"] = ""
-                    set_data(message_id=str(panel_msg.channel.id), data=db_dict)
+                    set_data(message_id=str(panel_msg.id), data=db_dict)
                     # await conf_msg.reply("uploaded to DB")
                     # upload to DB
                 else:
@@ -128,7 +128,7 @@ class RolePanelModal(Modal):
         super().__init__(title="ロールパネルメッセージ入力")
         self.add_item(
             InputText(
-                label="パネル説明",
+                label="パネルタイトル(必要に応じて変更してください)",
                 style=discord.InputTextStyle.short,
                 required=True,
                 value="ロールパネル",
@@ -146,7 +146,7 @@ class RolePanelModal(Modal):
 
     async def callback(self, interaction: discord.Interaction):
         self.future.set_result(
-            [self.children[0].value, self.children[1].value, interaction]
+            (self.children[0].value, self.children[1].value, interaction)
         )
         await interaction.response.defer()
 
@@ -190,18 +190,21 @@ class RoleButton(discord.ui.Button):
 class PanelEmbed:
     def start(self) -> Embed:
         embed = Embed(
+            title="ロールパネル作成",
             color=1787875,
             description="下のボタンを押して、\nロールパネルに載せる説明を入力してください。\nこのテキストのように表示されます。",
         )
         return embed
 
-    def _panel(self, title: str, text: str) -> Embed:
+    def _panel(
+        self, title: str, text: str, footer: str = "付与/解除したいロールのボタンを押してください。"
+    ) -> Embed:
         embed = Embed(
             title=title,
             description=text,
             color=1787875,
         )
-        embed.set_footer(text="付与/解除したいロールのボタンを押してください。")
+        embed.set_footer(text=footer)
         return embed
 
     def _panel_accept(self, target: discord.TextChannel, url: str) -> Embed:
