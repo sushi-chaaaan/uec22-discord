@@ -1,5 +1,5 @@
 import traceback
-from typing import Any
+from typing import Any, Union
 import discord
 import firebase_admin
 from discord.ext import commands, tasks
@@ -45,16 +45,16 @@ class FireStoreTask(commands.Cog):
 
     @tasks.loop(hours=12)
     async def _check_panel(self):
-        panels = db.collection("role_panel").get()
+        panels: list[dict[Any, Any]] = get_data(collection="role_panel")
         for panel in panels:
-            _panel = panel.to_dict()
-            _guild = await self.bot.fetch_guild(int(_panel["guild_id"]))
-            _channel = await _guild.fetch_channel(int(_panel["channel_id"]))
-            if not isinstance(_channel, discord.TextChannel):
-                print("Invalid ChannelType")
+            _guild = self.bot.get_guild(int(panel["guild_id"]))
+            if _guild is None:
                 return
-            _message = await _channel.fetch_message(int(_panel["message_id"]))
-            if _message is None:
+            _ch = _guild.get_channel_or_thread(int(panel["channel_id"]))
+            if _ch is None or not type(_ch) in (discord.TextChannel, discord.Thread):
+                return
+            _msg = _ch.get_partial_message(int(panel["message_id"]))
+            if _msg is None:
                 pass
 
 
