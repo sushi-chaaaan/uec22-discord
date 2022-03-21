@@ -18,7 +18,7 @@ class MemberCount(commands.Cog):
         await self.membercount()
 
     async def membercount(self):
-        guild = await self.bot.fetch_guild(guild_id)
+        guild = self.bot.get_guild(guild_id)
         server_member_count = guild.member_count
         vc = self.bot.get_channel(count_vc)
         await vc.edit(name=f"Member Count: {server_member_count}")
