@@ -51,7 +51,7 @@ class FireStoreTask(commands.Cog):
             if _guild is None:
                 return
             _ch = _guild.get_channel_or_thread(int(panel["channel_id"]))
-            if _ch is None or not type(_ch) in (discord.TextChannel, discord.Thread):
+            if _ch is None or not isinstance(_ch, discord.abc.Messageable):
                 return
             _msg = _ch.get_partial_message(int(panel["message_id"]))
             if _msg is None:

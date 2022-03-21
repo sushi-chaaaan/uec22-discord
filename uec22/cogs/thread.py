@@ -144,7 +144,9 @@ class Thread(commands.Cog):
         final_text = "\n\n".join(final_board)
         return final_text
 
-    async def compose_thread_create_log(self, thread):
+    async def compose_thread_create_log(self, thread: discord.Thread):
+        if thread.owner is None or thread.parent is None:
+            return
         embed = discord.Embed(
             title="スレッドが作成されました。",
             url="",

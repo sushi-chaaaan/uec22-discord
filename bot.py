@@ -73,7 +73,7 @@ class MyBot(commands.Bot):
         print(info)
         print("------------------------------------------------------")
         channel = self.get_channel(951165574237532200)
-        if isinstance(channel, discord.TextChannel):
+        if isinstance(channel, discord.abc.Messageable):
             await channel.send(f"```{info}```")
         else:
             print("Failed to send boot message: Invalid ChannelType")
