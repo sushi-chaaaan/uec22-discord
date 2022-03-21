@@ -1,10 +1,7 @@
-import os
-
 from discord.ext import commands, tasks
+from ids import guild_id
 
-admin_role = int(os.environ["ADMIN_ROLE"])
-count_vc = int(os.environ["COUNT_VC"])
-guild_id = int(os.environ["GUILD_ID"])
+count_vc = 955434095490510949
 
 
 class MemberCount(commands.Cog):
