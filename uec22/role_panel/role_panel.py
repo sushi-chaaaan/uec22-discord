@@ -46,8 +46,8 @@ class RolePanel(commands.Cog):
         # check send board
         await modal_future
         if modal_future.done() is True:
-            text, modal_interaction = modal_future.result()
-            panel_embed = PanelEmbed()._panel(text)
+            _title, text, modal_interaction = modal_future.result()
+            panel_embed = PanelEmbed()._panel(_title, text)
             test_role_view = RolePanelView(roles=roles, disabled=True)
             # send test panel
             await modal_interaction.followup.send(
@@ -128,6 +128,15 @@ class RolePanelModal(Modal):
         super().__init__(title="ロールパネルメッセージ入力")
         self.add_item(
             InputText(
+                label="パネル説明",
+                style=discord.InputTextStyle.short,
+                required=True,
+                value="ロールパネル",
+                row=0,
+            )
+        )
+        self.add_item(
+            InputText(
                 label="パネルメッセージ",
                 style=discord.InputTextStyle.paragraph,
                 required=True,
@@ -136,7 +145,9 @@ class RolePanelModal(Modal):
         )
 
     async def callback(self, interaction: discord.Interaction):
-        self.future.set_result([self.children[0].value, interaction])
+        self.future.set_result(
+            [self.children[0].value, self.children[1].value, interaction]
+        )
         await interaction.response.defer()
 
 
@@ -184,9 +195,9 @@ class PanelEmbed:
         )
         return embed
 
-    def _panel(self, text: str) -> Embed:
+    def _panel(self, title: str, text: str) -> Embed:
         embed = Embed(
-            title="ロールパネル",
+            title=title,
             description=text,
             color=1787875,
         )
