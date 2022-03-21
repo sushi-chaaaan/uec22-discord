@@ -30,8 +30,6 @@ EXTENSION_LIST = [
 
 PERSISTENT_VIEWS = []
 
-ROLE_PANEL = []
-
 discord.http.API_VERSION = 9
 
 # Intent
@@ -39,6 +37,7 @@ intents = discord.Intents.default()
 intents.typing = False
 
 
+# Bot Class
 class MyBot(commands.Bot):
     def __init__(self, command_prefix="!ue ", **options):
         super().__init__(command_prefix, intents=intents, **options)
