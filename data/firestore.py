@@ -7,7 +7,7 @@ from firebase_admin import credentials, firestore
 
 
 cred = credentials.Certificate(
-    "data/uec22-discord-firebase-adminsdk-8gyuv-b0189dec6c.json"
+    r"data/uec22-discord-firebase-adminsdk-8gyuv-b0189dec6c.json"
 )
 firebase_admin.initialize_app(cred)
 db = firestore.client()
