@@ -7,7 +7,7 @@ from typing import Any
 import discord
 from discord.ext import commands
 
-from data.firestore import db, get_data
+from data.firestore import get_data
 from uec22.role_panel.panel_db import set_board
 
 logging.basicConfig(level=logging.INFO)
@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO)
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
-token = "OTUxMTY3NTU0MjUxMDIyMzU2.Yijh0A.MB4fOOAuqeoxmnNez7tvn_CN5NE"
+token = ""
 
 # Load when start bot
 EXTENSION_LIST = [
@@ -78,9 +78,6 @@ class MyBot(commands.Bot):
             await channel.send(f"```{info}```")
         else:
             print("Failed to send boot message: Invalid ChannelType")
-        panels = db.collection("role_panel").get()
-        for panel in panels:
-            print(panel.to_dict())
 
 
 bot = MyBot()

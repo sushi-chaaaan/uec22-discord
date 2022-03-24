@@ -6,10 +6,11 @@ import firebase_admin
 from discord.ext import commands, tasks
 from firebase_admin import credentials, firestore
 
-cred = credentials.Certificate(
-    r"data/uec22-discord-firebase-adminsdk-8gyuv-b0189dec6c.json"
-)
-firebase_admin.initialize_app(cred)
+if not firebase_admin._apps:
+    cred = credentials.Certificate(
+        r"data/uec22-discord-firebase-adminsdk-8gyuv-b0189dec6c.json"
+    )
+    firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 
