@@ -15,10 +15,11 @@ logging.basicConfig(level=logging.INFO)
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
-token = ""
+token = "OTUxMTY3NTU0MjUxMDIyMzU2.Yijh0A.MB4fOOAuqeoxmnNez7tvn_CN5NE"
 
 # Load when start bot
 EXTENSION_LIST = [
+    "data.firestore",
     "uec22.cogs.error",
     "uec22.cogs.mem_count",
     "uec22.cogs.message",
