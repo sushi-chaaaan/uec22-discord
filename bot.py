@@ -27,6 +27,7 @@ EXTENSION_LIST = [
     "uec22.cogs.poll",
     "uec22.cogs.thread",
     "uec22.cogs.utils",
+    "uec22.genshin.connect_id",
     "uec22.role_panel.role_panel",
 ]
 
