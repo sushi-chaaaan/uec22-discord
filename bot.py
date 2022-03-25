@@ -2,7 +2,7 @@ import logging
 import sys
 import traceback
 from datetime import datetime, timedelta, timezone
-from typing import Any
+from typing import Any, Optional
 
 import discord
 from discord.ext import commands
@@ -62,10 +62,13 @@ class MyBot(commands.Bot):
                 except Exception:
                     traceback.print_exc()
             # list[dict[Any, Any]]
-            panels: list[dict[Any, Any]] = get_data(collection="role_panel")
-            for panel in panels:
-                await set_board(self, panel)
-                # self.add_view(RolePanel(roles=_roles), message_id=int(panel["message_id"]))
+            panels: Optional[list[dict[Any, Any]]] = get_data(collection="role_panel")
+            if panels is None:
+                pass
+            else:
+                for panel in panels:
+                    await set_board(self, panel)
+            # self.add_view(RolePanel(roles=_roles), message_id=int(panel["message_id"]))
             self.persistent_views_added = True
         info = ""
         if self.user is None:

@@ -6,6 +6,8 @@ import firebase_admin
 from discord.ext import commands, tasks
 from firebase_admin import credentials, firestore
 
+from typing import Optional
+
 if not firebase_admin._apps:
     cred = credentials.Certificate(
         r"data/uec22-discord-firebase-adminsdk-8gyuv-b0189dec6c.json"
@@ -14,8 +16,12 @@ if not firebase_admin._apps:
 db = firestore.client()
 
 
-def get_data(collection: str) -> list[dict[Any, Any]]:
-    _data = db.collection(collection).get()
+def get_data(collection: str) -> Optional[list[dict[Any, Any]]]:
+    try:
+        _data = db.collection(collection).get()
+    except Exception:
+        traceback.print_exc()
+        return
     data_model = []
     for data in _data:
         data_model.append(data.to_dict())
@@ -53,7 +59,10 @@ class FireStoreTask(commands.Cog):
 
     @tasks.loop(hours=6)
     async def check_panel(self):
-        panels: list[dict[Any, Any]] = get_data(collection="role_panel")
+        panels: Optional[list[dict[Any, Any]]] = get_data(collection="role_panel")
+        if panels is None:
+            print("Check Panel Error")
+            return
         for panel in panels:
             _guild = self.bot.get_guild(int(panel["guild_id"]))
             if _guild is None:
