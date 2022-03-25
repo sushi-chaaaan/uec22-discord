@@ -60,7 +60,9 @@ class GenshinID(commands.Cog):
 
         g_id = res_df["genshin_id"].values[0]
         # print(g_id)
-        await ctx.interaction.followup.send(content=f"{target}さんの原神UIDは{g_id}です")
+        await ctx.interaction.followup.send(
+            content=f"{target}さんの原神UIDは{g_id}です", ephemeral=True
+        )
 
 
 def setup(bot):
