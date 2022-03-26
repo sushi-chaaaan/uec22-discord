@@ -49,15 +49,14 @@ class GenshinID(commands.Cog):
         if not ctx.interaction.user:
             return
         # Get Data Frame
-
         df = self.get_frame(collection="genshin_id")
         # print(df)
-        # search by Discord ID
 
+        # search by Discord ID
         res_df = df[df["discord_id"] == str(target.id)]
         # print(res_df)
-        # Output ID (type: str)
 
+        # Output ID (type: str)
         g_id = res_df["genshin_id"].values[0]
         # print(g_id)
         await ctx.interaction.followup.send(
