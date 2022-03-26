@@ -9,6 +9,7 @@ from discord.ext import commands
 
 from data.firestore import get_data
 from uec22.role_panel.panel_db import set_board
+from uec22.cogs.forum import QuestionView
 
 logging.basicConfig(level=logging.INFO)
 
@@ -21,6 +22,7 @@ token = ""
 EXTENSION_LIST = [
     "data.firestore",
     "uec22.cogs.error",
+    "uec22.cogs.forum",
     "uec22.cogs.mem_count",
     "uec22.cogs.message",
     "uec22.cogs.pin",
@@ -31,7 +33,6 @@ EXTENSION_LIST = [
     "uec22.role_panel.role_panel",
 ]
 
-PERSISTENT_VIEWS = []
 
 discord.http.API_VERSION = 9
 
@@ -54,6 +55,7 @@ class MyBot(commands.Bot):
 
     # run when boot is done preparing to run.
     async def on_ready(self):
+        PERSISTENT_VIEWS = [QuestionView()]
         if not self.persistent_views_added:
             for view in PERSISTENT_VIEWS:
                 try:
