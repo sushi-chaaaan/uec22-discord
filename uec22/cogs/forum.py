@@ -24,7 +24,7 @@ class QuestionView(discord.ui.View):
     @discord.ui.button(
         label="質問する！",
         custom_id="question_sys_button",
-        style=discord.ButtonStyle.blurple,
+        style=discord.ButtonStyle.secondary,
         emoji="<:help_white:957274506618077194>",
     )
     async def question_callback(
