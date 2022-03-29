@@ -61,10 +61,10 @@ class RolePanel(commands.Cog):
             # confirm
             await conf_msg.reply(view=conf_view)
             await conf_future
-            if conf_future.done() is True:
+            if conf_future.done():
                 conf_result, conf_interaction = conf_future.result()
                 # send board
-                if conf_result is True:
+                if conf_result:
                     panel_view = RolePanelView(roles=roles)
                     panel_msg: discord.Message = await target.send(
                         embeds=[panel_embed], view=panel_view
@@ -90,9 +90,11 @@ class RolePanel(commands.Cog):
                     set_data(message_id=str(panel_msg.id), data=db_dict)
                     # await conf_msg.reply("uploaded to DB")
                     # upload to DB
+                    return
                 else:
                     # cancel
                     await conf_msg.reply(content="パネルの作成をキャンセルしました。")
+                    return
 
 
 def set_data(message_id: str, data: dict) -> None:

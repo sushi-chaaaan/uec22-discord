@@ -1,5 +1,5 @@
 import traceback
-from typing import Any, Union
+from typing import Any
 import discord
 import firebase_admin
 from discord.ext import commands, tasks
@@ -55,7 +55,7 @@ class FireStoreTask(commands.Cog):
                 return
             _msg = _ch.get_partial_message(int(panel["message_id"]))
             if _msg is None:
-                pass
+                return
 
 
 def setup(bot):
