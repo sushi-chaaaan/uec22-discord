@@ -30,10 +30,11 @@ class Thread(commands.Cog):
         if self.bot.user.id in [x.id for x in thread_member_list]:
             return
         else:
-            channel = self.bot.get_channel(thread_log_channel)
-            embed = await self.compose_thread_create_log(thread)
-            await channel.send(embed=embed)
-            return
+            # channel = self.bot.get_channel(thread_log_channel)
+            # embed = await self.compose_thread_create_log(thread)
+            # await channel.send(embed=embed)
+            # return
+            pass
 
     @commands.Cog.listener(name="on_thread_update")
     async def detect_archive(self, before, after):
@@ -144,7 +145,9 @@ class Thread(commands.Cog):
         final_text = "\n\n".join(final_board)
         return final_text
 
-    async def compose_thread_create_log(self, thread):
+    async def compose_thread_create_log(self, thread: discord.Thread):
+        if thread.owner is None or thread.parent is None:
+            return
         embed = discord.Embed(
             title="スレッドが作成されました。",
             url="",

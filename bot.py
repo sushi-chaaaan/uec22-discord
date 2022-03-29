@@ -2,13 +2,14 @@ import logging
 import sys
 import traceback
 from datetime import datetime, timedelta, timezone
-from typing import Any
+from typing import Any, Optional
 
 import discord
 from discord.ext import commands
 
-from data.firestore import db, get_data
+from data.firestore import get_data
 from uec22.role_panel.panel_db import set_board
+from uec22.cogs.forum import QuestionView
 
 logging.basicConfig(level=logging.INFO)
 
@@ -19,16 +20,19 @@ token = ""
 
 # Load when start bot
 EXTENSION_LIST = [
+    "data.firestore",
     "uec22.cogs.error",
+    "uec22.cogs.forum",
     "uec22.cogs.mem_count",
     "uec22.cogs.message",
     "uec22.cogs.pin",
     "uec22.cogs.poll",
     "uec22.cogs.thread",
+    "uec22.cogs.utils",
+    "uec22.genshin.connect_id",
     "uec22.role_panel.role_panel",
 ]
 
-PERSISTENT_VIEWS = []
 
 discord.http.API_VERSION = 9
 
@@ -51,6 +55,7 @@ class MyBot(commands.Bot):
 
     # run when boot is done preparing to run.
     async def on_ready(self):
+        PERSISTENT_VIEWS = [QuestionView()]
         if not self.persistent_views_added:
             for view in PERSISTENT_VIEWS:
                 try:
@@ -59,10 +64,13 @@ class MyBot(commands.Bot):
                 except Exception:
                     traceback.print_exc()
             # list[dict[Any, Any]]
-            panels: list[dict[Any, Any]] = get_data(collection="role_panel")
-            for panel in panels:
-                await set_board(self, panel)
-                # self.add_view(RolePanel(roles=_roles), message_id=int(panel["message_id"]))
+            panels: Optional[list[dict[Any, Any]]] = get_data(collection="role_panel")
+            if panels is None:
+                pass
+            else:
+                for panel in panels:
+                    await set_board(self, panel)
+            # self.add_view(RolePanel(roles=_roles), message_id=int(panel["message_id"]))
             self.persistent_views_added = True
         info = ""
         if self.user is None:
@@ -73,13 +81,10 @@ class MyBot(commands.Bot):
         print(info)
         print("------------------------------------------------------")
         channel = self.get_channel(951165574237532200)
-        if isinstance(channel, discord.TextChannel):
+        if isinstance(channel, discord.abc.Messageable):
             await channel.send(f"```{info}```")
         else:
             print("Failed to send boot message: Invalid ChannelType")
-        panels = db.collection("role_panel").get()
-        for panel in panels:
-            print(panel.to_dict())
 
 
 bot = MyBot()
