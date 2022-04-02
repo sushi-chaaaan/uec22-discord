@@ -14,7 +14,7 @@ class MemberCount(commands.Cog):
     def cog_unload(self):
         self.start_count.cancel()
 
-    @tasks.loop(minutes=30)
+    @tasks.loop(minutes=30.0)
     async def start_count(self):
         await self.membercount()
 
