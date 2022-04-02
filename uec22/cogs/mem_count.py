@@ -1,3 +1,5 @@
+from inspect import classify_class_attrs
+
 from discord.ext import commands, tasks
 from ids import guild_id
 
@@ -14,8 +16,11 @@ class MemberCount(commands.Cog):
 
     @tasks.loop(minutes=30)
     async def start_count(self):
-        await self.bot.wait_until_ready()
         await self.membercount()
+
+    @start_count.before_loop
+    async def before_count(self):
+        await self.bot.wait_until_ready()
 
     async def membercount(self):
         guild = self.bot.get_guild(guild_id)
