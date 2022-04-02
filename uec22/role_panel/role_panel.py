@@ -2,11 +2,11 @@ import asyncio
 from typing import Optional
 
 import discord
+from data.firestore import add_data
 from discord import Embed
 from discord.ext import commands
 from discord.ui import InputText, Modal
-from uec22.snippets.confirm_button import Accept_Button, Reject_Button
-from data.firestore import add_data
+from uec22.snippets.confirm_button import ConfirmView
 
 
 class RolePanel(commands.Cog):
@@ -57,14 +57,16 @@ class RolePanel(commands.Cog):
             )
             conf_msg = await modal_interaction.original_message()
             conf_future = asyncio.Future()
-            conf_view = PanelCheckView(future=conf_future)
+            conf_view = ConfirmView(
+                label_ok="作成する", label_ng="作成しない", future=conf_future
+            )
             # confirm
             await conf_msg.reply(view=conf_view)
             await conf_future
-            if conf_future.done() is True:
+            if conf_future.done():
                 conf_result, conf_interaction = conf_future.result()
                 # send board
-                if conf_result is True:
+                if conf_result:
                     panel_view = RolePanelView(roles=roles)
                     panel_msg: discord.Message = await target.send(
                         embeds=[panel_embed], view=panel_view
@@ -90,9 +92,12 @@ class RolePanel(commands.Cog):
                     set_data(message_id=str(panel_msg.id), data=db_dict)
                     # await conf_msg.reply("uploaded to DB")
                     # upload to DB
+                    return
                 else:
                     # cancel
+                    await conf_interaction.message.delete()
                     await conf_msg.reply(content="パネルの作成をキャンセルしました。")
+                    return
 
 
 def set_data(message_id: str, data: dict) -> None:
@@ -100,11 +105,6 @@ def set_data(message_id: str, data: dict) -> None:
 
 
 # 作成確認用View
-class PanelCheckView(discord.ui.View):
-    def __init__(self, future: asyncio.Future, timeout: Optional[float] = None):
-        super().__init__(timeout=timeout)
-        self.add_item(Accept_Button(label="作成する", future=future))
-        self.add_item(Reject_Button(label="キャンセル", future=future))
 
 
 # パネル説明入力View
@@ -204,7 +204,7 @@ class PanelEmbed:
             description=text,
             color=1787875,
         )
-        embed.set_footer(text=footer)
+        # embed.set_footer(text=footer)
         return embed
 
     def _panel_accept(self, target: discord.TextChannel, url: str) -> Embed:

@@ -1,6 +1,5 @@
 import traceback
 from typing import Any
-
 import discord
 import firebase_admin
 from discord.ext import commands, tasks
