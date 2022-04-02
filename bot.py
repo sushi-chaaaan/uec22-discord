@@ -86,7 +86,7 @@ class MyBot(commands.Bot):
         print("------------------------------------------------------")
         print(info)
         print("------------------------------------------------------")
-        channel = self.get_channel(951165574237532200)
+        channel = self.get_channel(959849216052723882)
         if isinstance(channel, discord.abc.Messageable):
             await channel.send(f"```{info}```")
         else:
