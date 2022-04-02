@@ -1,7 +1,7 @@
 from discord.ext import commands, tasks
 from ids import guild_id
 
-count_vc = 955434095490510949
+count_vc = 959628458718289961
 
 
 class MemberCount(commands.Cog):

@@ -204,7 +204,7 @@ class PanelEmbed:
             description=text,
             color=1787875,
         )
-        embed.set_footer(text=footer)
+        # embed.set_footer(text=footer)
         return embed
 
     def _panel_accept(self, target: discord.TextChannel, url: str) -> Embed:
