@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 import traceback
 from datetime import datetime, timedelta, timezone
@@ -8,19 +9,20 @@ import discord
 from discord.ext import commands
 
 from data.firestore import get_data
-from uec22.role_panel.panel_db import set_board
 from uec22.cogs.forum import QuestionView
+from uec22.role_panel.panel_db import set_board
 
 logging.basicConfig(level=logging.INFO)
 
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
-token = ""
+token = os.getenv("DISCORD_BOT_TOKEN")
 
 # Load when start bot
 EXTENSION_LIST = [
     "data.firestore",
+    "uec22.cogs.entrance",
     "uec22.cogs.error",
     "uec22.cogs.forum",
     "uec22.cogs.mem_count",
