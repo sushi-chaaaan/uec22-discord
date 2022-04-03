@@ -1,5 +1,3 @@
-from inspect import classify_class_attrs
-
 from discord.ext import commands, tasks
 from ids import guild_id
 
