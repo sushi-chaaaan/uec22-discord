@@ -27,7 +27,6 @@ class MemberCount(commands.Cog):
         server_member_count = guild.member_count
         vc = self.bot.get_channel(count_vc)
         await vc.edit(name=f"Member Count: {server_member_count}")
-        return
 
 
 def setup(bot):
