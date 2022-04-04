@@ -23,10 +23,10 @@ class SuperUser(commands.Cog):
             if not _su_role:
                 print("Cannot find su Role")
                 return
-            await target.add_roles(_su_role)
+            await target.add_roles(_su_role, reason="su mode activate")
             await ctx.reply(content="su権限を付与しました。300秒後に解除されます。")
             await asyncio.sleep(300)
-            await target.remove_roles(_su_role)
+            await target.remove_roles(_su_role, reason="su mode deactivate")
             return
         # su権限をすでに持っている
         await ctx.reply(content="既にsu権限を所持しています。")
