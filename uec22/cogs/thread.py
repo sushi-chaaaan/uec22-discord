@@ -92,7 +92,12 @@ class Thread(commands.Cog):
                 for channel in interaction.guild.channels
                 if channel.category is None and type(channel) != discord.CategoryChannel
             ]
-        sort_channels = sorted(channels, key=lambda channel: channel.position)
+        trash_vc = [
+            channel
+            for channel in channels
+            if not isinstance(channel, discord.VoiceChannel)
+        ]
+        sort_channels = sorted(trash_vc, key=lambda channel: channel.position)
         # print(channels)
         thread_dic = {}
         if category_id:
