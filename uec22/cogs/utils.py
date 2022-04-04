@@ -2,9 +2,9 @@ from datetime import datetime, timedelta, timezone
 
 import discord
 from discord import ApplicationContext, Option
-from discord.commands import permissions, slash_command
+from discord.commands import slash_command
 from discord.ext import commands
-from ids import admin_role, guild_id
+from ids import guild_id
 
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
