@@ -3,7 +3,7 @@ from typing import Optional, Union
 
 import discord
 from discord import ApplicationContext, Option
-from discord.commands import permissions, slash_command
+from discord.commands import slash_command
 from discord.ext import commands
 from discord.ext.ui import (
     InteractionProvider,
@@ -56,7 +56,6 @@ class Thread(commands.Cog):
     """
 
     @slash_command(guild_ids=[guild_id], name="board")
-    @permissions.has_role(admin_role)
     async def _board_slash(
         self,
         ctx: ApplicationContext,
