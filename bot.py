@@ -30,6 +30,7 @@ EXTENSION_LIST = [
     "uec22.cogs.message",
     "uec22.cogs.pin",
     "uec22.cogs.poll",
+    "uec22.cogs.su",
     "uec22.cogs.thread",
     "uec22.cogs.utils",
     "uec22.genshin.connect_id",
