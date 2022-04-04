@@ -15,7 +15,6 @@ class Utils(commands.Cog):
         self.bot = bot
 
     @slash_command(name="user", guild_ids=[guild_id])
-    @permissions.has_role(admin_role)
     async def _newuser(
         self,
         ctx: ApplicationContext,
