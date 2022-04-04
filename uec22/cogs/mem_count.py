@@ -1,3 +1,4 @@
+import discord
 from discord.ext import commands, tasks
 from ids import guild_id
 
@@ -22,8 +23,12 @@ class MemberCount(commands.Cog):
 
     async def membercount(self):
         guild = self.bot.get_guild(guild_id)
+        if not guild:
+            return
         server_member_count = guild.member_count
         vc = self.bot.get_channel(count_vc)
+        if not vc or not isinstance(vc, discord.VoiceChannel):
+            return
         await vc.edit(name=f"Member Count: {server_member_count}")
 
 
