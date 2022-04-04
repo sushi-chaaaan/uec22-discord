@@ -9,6 +9,7 @@ import discord
 from discord.ext import commands
 
 from data.firestore import get_data
+from uec22.cogs.entrance import EnterVerifyView
 from uec22.cogs.forum import QuestionView
 from uec22.role_panel.panel_db import set_board
 
@@ -57,7 +58,10 @@ class MyBot(commands.Bot):
 
     # run when boot is done preparing to run.
     async def on_ready(self):
-        PERSISTENT_VIEWS = [QuestionView()]
+        PERSISTENT_VIEWS = [
+            QuestionView(),
+            EnterVerifyView(),
+        ]
         if not self.persistent_views_added:
             for view in PERSISTENT_VIEWS:
                 try:
@@ -82,7 +86,7 @@ class MyBot(commands.Bot):
         print("------------------------------------------------------")
         print(info)
         print("------------------------------------------------------")
-        channel = self.get_channel(951165574237532200)
+        channel = self.get_channel(959849216052723882)
         if isinstance(channel, discord.abc.Messageable):
             await channel.send(f"```{info}```")
         else:

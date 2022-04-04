@@ -13,11 +13,10 @@ from discord.ext.ui import (
     View,
     ViewTracker,
 )
-from ids import guild_id
+from ids import admin_role, guild_id
 
 thread_log_channel = 954742615008493588
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
-admin_role = 954742765831462933
 
 
 class Thread(commands.Cog):

@@ -11,7 +11,7 @@ class Entrance(commands.Cog):
     @commands.command(name="send-ent")
     @commands.has_permissions(administrator=True)
     async def _ent_cmd(self, ctx: commands.Context):
-        await ctx.send(embeds=[self.ent_embed()], view=EnterVerify())
+        await ctx.send(embeds=[self.ent_embed()], view=EnterVerifyView())
 
     def ent_embed(self) -> Embed:
         embed = Embed(
@@ -21,7 +21,7 @@ class Entrance(commands.Cog):
         return embed
 
 
-class EnterVerify(discord.ui.View):
+class EnterVerifyView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
