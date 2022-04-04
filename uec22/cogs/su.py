@@ -14,7 +14,7 @@ class SuperUser(commands.Cog):
     @commands.guild_only()
     async def _su(self, ctx: commands.Context):
         target = ctx.message.author
-        guild = ctx.guild()
+        guild = ctx.guild
         if not isinstance(target, discord.Member) or not guild:
             return
         if su_role not in [r.id for r in target.roles]:
