@@ -17,6 +17,7 @@ class Entrance(commands.Cog):
         embed = Embed(
             color=1787875,
             title="ようこそ",
+            description="入室ボタンを押してください。",
         )
         return embed
 
