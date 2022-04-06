@@ -12,7 +12,7 @@ class Message_Sys(commands.Cog):
     async def on_message_dispand(self, message: discord.Message):
         avoid_prefix_list = ["!ue "]
         avoid_suffix_list = []
-        if type(message.channel) == discord.DMChannel:
+        if type(message.channel) is discord.DMChannel:
             return
         else:
             for prefix in avoid_prefix_list:
