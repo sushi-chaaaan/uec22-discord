@@ -79,9 +79,7 @@ class GenshinID(commands.Cog):
         target = ctx.interaction.user
         if target:
             delete_data(collection="genshin_id", document=str(target.id))
-            await ctx.respond(
-                f"{target}さんのUIDを削除しました", ephemeral=True
-            )
+            await ctx.respond(f"{target}さんのUIDを削除しました", ephemeral=True)
             return
 
 
