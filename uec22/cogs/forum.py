@@ -5,7 +5,6 @@ import discord
 from discord import Embed
 from discord.ext import commands
 from discord.ui import InputText, Modal
-from ids import forum_category, forum_start_ch
 
 
 class Forum(commands.Cog):
