@@ -73,11 +73,11 @@ class GenshinID(commands.Cog):
     async def g_delete_id(
         self,
         ctx: ApplicationContext,
-        target: Option(discord.Member, description="削除するユーザー"),
     ):
         await ctx.defer()
         if not ctx.interaction.user:
             return
+        target = ctx.interaction.user
         if target:
             delete_data(collection="genshin_id", document=str(target.id))
             await ctx.respond(content=f"{target}さんのUIDを削除しました", ephemeral=True)
