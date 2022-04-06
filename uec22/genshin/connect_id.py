@@ -67,7 +67,7 @@ class GenshinID(commands.Cog):
         else:
             return res_df["discord_id"].values[0]
 
-    @slash_command(guild_ids=[guild_id], name="g-delete")
+    @slash_command(guild_ids=[guild_id], name="genshin-delete")
     async def g_delete_id(
         self,
         ctx: ApplicationContext,
