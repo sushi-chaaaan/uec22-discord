@@ -21,7 +21,7 @@ class Message_Sys(commands.Cog):
             for suffix in avoid_suffix_list:
                 if message.content.endswith(suffix):
                     return
-                
+
             embeds = await dispand(self.bot, message)
             if embeds == []:
                 return
