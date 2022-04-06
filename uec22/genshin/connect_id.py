@@ -56,16 +56,18 @@ class GenshinID(commands.Cog):
         if target:
             res = self.search_by_id(df=df, target=target.id)
             if res:
-                await ctx.respond(content=f"{target}さんの原神UIDは{res}です", ephemeral=True)
+                await ctx.respond(
+                    content=f"{target}さんの原神UIDは{str(res)}です", ephemeral=True
+                )
             else:
                 await ctx.respond(content=f"{target}さんのUIDは登録されていません", ephemeral=True)
 
-    def search_by_id(self, df: pd.DataFrame, target: int) -> Optional[str]:
-        res_df = df[df["genshin_id"] == target]
+    def search_by_id(self, df: pd.DataFrame, target: int) -> Optional[int]:
+        res_df = df[df["discord_id"] == target]
         if res_df.empty:
             return None
         else:
-            return res_df["discord_id"].values[0]
+            return res_df["genshin_id"].values[0]
 
     @slash_command(guild_ids=[guild_id], name="genshin-delete")
     async def g_delete_id(
