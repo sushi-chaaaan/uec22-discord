@@ -66,7 +66,7 @@ class GenshinID(commands.Cog):
                 return
 
     @slash_command(guild_ids=[guild_id], name="genshin-search-all")
-    async def g_search_id(
+    async def g_search_all(
         self,
         ctx: ApplicationContext,
     ):
