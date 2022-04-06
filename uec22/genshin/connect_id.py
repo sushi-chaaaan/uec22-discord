@@ -57,11 +57,47 @@ class GenshinID(commands.Cog):
             res = self.search_by_id(df=df, target=target.id)
             if res:
                 res = math.floor(res)
-                await ctx.respond(f"{target}さんの原神UIDは{str(res)}です", ephemeral=True)
+                await ctx.respond(
+                    f"{target.mention}さんの原神UIDは{str(res)}です", ephemeral=True
+                )
                 return
             else:
-                await ctx.respond(f"{target}さんのUIDは登録されていません", ephemeral=True)
+                await ctx.respond(f"{target.mention}さんのUIDは登録されていません", ephemeral=True)
                 return
+
+    @slash_command(guild_ids=[guild_id], name="genshin-search-all")
+    async def g_search_id(
+        self,
+        ctx: ApplicationContext,
+    ):
+        """Discordアカウントと紐づいた原神のUIDの一覧を返します。"""
+        if not ctx.interaction.user:
+            return
+        # Get Data Frame
+        df = self.get_frame(collection="genshin_id")
+        # Search
+        res = self.search_all(df=df)
+        if res:
+            id_text_list = [
+                f"<@!{d['discord_id']}>さんの原神UID: {d['genshin_id']}" for d in res
+            ]
+            send_text = "原神UIDリスト" + "\n".join(id_text_list)
+            await ctx.respond(send_text, ephemeral=True)
+        else:
+            await ctx.respond("UIDリストを出力できませんでした。", ephemeral=True)
+            return
+
+    def search_all(self, df: pd.DataFrame) -> list[dict[str, int]]:
+        id_list = []
+        for row in df.itertuples():
+            discord_id = row.discord_id
+            genshin_id = row.genshin_id
+            _dict = {
+                "genshin_id": genshin_id,
+                "discord_id": discord_id,
+            }
+            id_list.append(_dict)
+        return id_list
 
     def search_by_id(self, df: pd.DataFrame, target: int) -> Optional[int]:
         res_df = df[df["discord_id"] == target]
@@ -81,7 +117,7 @@ class GenshinID(commands.Cog):
         target = ctx.interaction.user
         if target:
             delete_data(collection="genshin_id", document=str(target.id))
-            await ctx.respond(f"{target}さんのUIDを削除しました", ephemeral=True)
+            await ctx.respond(f"{target.mention}さんのUIDを削除しました", ephemeral=True)
             return
 
 
