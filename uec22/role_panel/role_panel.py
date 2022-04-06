@@ -188,7 +188,8 @@ class RoleButton(discord.ui.Button):
 
 # ここから下はEmbedObjectを作るやつ
 class PanelEmbed:
-    def start(self) -> Embed:
+    @staticmethod
+    def start() -> Embed:
         embed = Embed(
             title="ロールパネル作成",
             color=1787875,
@@ -196,8 +197,9 @@ class PanelEmbed:
         )
         return embed
 
+    @staticmethod
     def _panel(
-        self, title: str, text: str, footer: str = "付与/解除したいロールのボタンを押してください。"
+        title: str, text: str, footer: str = "付与/解除したいロールのボタンを押してください。"
     ) -> Embed:
         embed = Embed(
             title=title,
@@ -207,7 +209,8 @@ class PanelEmbed:
         # embed.set_footer(text=footer)
         return embed
 
-    def _panel_accept(self, target: discord.TextChannel, url: str) -> Embed:
+    @staticmethod
+    def _panel_accept(target: discord.TextChannel, url: str) -> Embed:
         embed = Embed(
             title="作成完了",
             color=1787875,
