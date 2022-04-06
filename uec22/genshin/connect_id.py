@@ -79,7 +79,7 @@ class GenshinID(commands.Cog):
         res = self.search_all(df=df)
         if res:
             id_text_list = [
-                f"<@!{d['discord_id']}>さんの原神UID: {d['genshin_id']}" for d in res
+                f"<@!{d['discord_id']}>さんのUID: {d['genshin_id']}" for d in res
             ]
             send_text = "\n".join(id_text_list)
             embed = discord.Embed(
