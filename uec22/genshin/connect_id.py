@@ -14,7 +14,7 @@ class GenshinID(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    def get_frame(self, collection: str) -> pd.DataFrame:
+    def get_frame(collection: str) -> pd.DataFrame:
         """create DataFrame from FireStore"""
         _data = get_data(collection=collection)
         return pd.json_normalize(_data)
@@ -93,7 +93,7 @@ class GenshinID(commands.Cog):
             await ctx.respond("UIDリストを出力できませんでした。", ephemeral=True)
             return
 
-    def search_all(self, df: pd.DataFrame) -> list[dict[str, int]]:
+    def search_all(df: pd.DataFrame) -> list[dict[str, int]]:
         """Create list of dict from DataFrame"""
         id_list = []
         for row in df.itertuples():
@@ -106,7 +106,7 @@ class GenshinID(commands.Cog):
             id_list.append(_dict)
         return id_list
 
-    def search_by_id(self, df: pd.DataFrame, target: int) -> Optional[int]:
+    def search_by_id(df: pd.DataFrame, target: int) -> Optional[int]:
         """Search bindded UID from Discord ID"""
         res_df = df[df["discord_id"] == target]
         if res_df.empty:
