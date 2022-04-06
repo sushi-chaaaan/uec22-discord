@@ -70,7 +70,7 @@ class GenshinID(commands.Cog):
         self,
         ctx: ApplicationContext,
     ):
-        """Discordアカウントと紐づいた原神のUIDの一覧を返します。"""
+        """Discordアカウントと紐づいた原神のUIDの一覧を返します。ただし自分のアカウントの"""
         if not ctx.interaction.user:
             return
         # Get Data Frame
@@ -79,10 +79,16 @@ class GenshinID(commands.Cog):
         res = self.search_all(df=df)
         if res:
             id_text_list = [
-                f"<@!{d['discord_id']}>さんの原神UID: {d['genshin_id']}" for d in res
+                f"<@!{d['discord_id']}>さんの原神UID: {d['genshin_id']}"
+                for d in res
+                if d["discord_id"] != ctx.interaction.user.id
             ]
-            send_text = "原神UIDリスト" + "\n".join(id_text_list)
-            await ctx.respond(send_text, ephemeral=True)
+            send_text = "\n".join(id_text_list)
+            embed = discord.Embed(
+                title="原神UIDリスト",
+                description=send_text,
+            )
+            await ctx.respond(embeds=[embed], ephemeral=True)
         else:
             await ctx.respond("UIDリストを出力できませんでした。", ephemeral=True)
             return
