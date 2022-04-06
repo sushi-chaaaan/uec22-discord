@@ -38,7 +38,7 @@ class GenshinID(commands.Cog):
         }
         # add to DB
         add_data(collection="genshin_id", document=str(user.id), data=db_dict)
-        await ctx.respond(content=f"UID: `{gen_uid}` を登録しました。", ephemeral=True)
+        await ctx.interaction.followup.send(content=f"UID: `{gen_uid}` を登録しました。", ephemeral=True)
         return
 
     @slash_command(guild_ids=[guild_id], name="genshin-search")
@@ -56,11 +56,11 @@ class GenshinID(commands.Cog):
         if target:
             res = self.search_by_id(df=df, target=target.id)
             if res:
-                await ctx.respond(
+                await ctx.interaction.followup.send(
                     content=f"{target}さんの原神UIDは{str(res)}です", ephemeral=True
                 )
             else:
-                await ctx.respond(content=f"{target}さんのUIDは登録されていません", ephemeral=True)
+                await ctx.interaction.followup.send(content=f"{target}さんのUIDは登録されていません", ephemeral=True)
 
     def search_by_id(self, df: pd.DataFrame, target: int) -> Optional[int]:
         res_df = df[df["discord_id"] == target]
@@ -80,9 +80,9 @@ class GenshinID(commands.Cog):
         target = ctx.interaction.user
         if target:
             delete_data(collection="genshin_id", document=str(target.id))
-            await ctx.respond(content=f"{target}さんのUIDを削除しました", ephemeral=True)
+            await ctx.interaction.followup.send(content=f"{target}さんのUIDを削除しました", ephemeral=True)
         else:
-            await ctx.respond(content="削除するユーザーを指定してください", ephemeral=True)
+            await ctx.interaction.followup.send(content="削除するユーザーを指定してください", ephemeral=True)
 
 
 def setup(bot):
