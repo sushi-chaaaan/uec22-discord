@@ -27,7 +27,6 @@ class GenshinID(commands.Cog):
         ),
     ):
         """原神のUIDをDiscordアカウントと紐つけます。"""
-        await ctx.defer()
         if not ctx.interaction.user:
             return
         user = ctx.interaction.user
@@ -38,9 +37,7 @@ class GenshinID(commands.Cog):
         }
         # add to DB
         add_data(collection="genshin_id", document=str(user.id), data=db_dict)
-        await ctx.interaction.followup.send(
-            f"UID: `{gen_uid}` を登録しました。", ephemeral=True
-        )
+        await ctx.respond(f"UID: `{gen_uid}` を登録しました。", ephemeral=True)
         return
 
     @slash_command(guild_ids=[guild_id], name="genshin-search")
@@ -50,7 +47,6 @@ class GenshinID(commands.Cog):
         target: Option(discord.Member, description="検索するユーザー"),
     ):
         """Discordアカウントと紐づいた原神のUIDを検索します。"""
-        await ctx.defer()
         if not ctx.interaction.user:
             return
         # Get Data Frame
@@ -59,14 +55,10 @@ class GenshinID(commands.Cog):
         if target:
             res = self.search_by_id(df=df, target=target.id)
             if res:
-                await ctx.interaction.followup.send(
-                    f"{target}さんの原神UIDは{str(res)}です", ephemeral=True
-                )
+                await ctx.respond(f"{target}さんの原神UIDは{str(res)}です", ephemeral=True)
                 return
             else:
-                await ctx.interaction.followup.send(
-                    f"{target}さんのUIDは登録されていません", ephemeral=True
-                )
+                await ctx.respond(f"{target}さんのUIDは登録されていません", ephemeral=True)
                 return
 
     def search_by_id(self, df: pd.DataFrame, target: int) -> Optional[int]:
@@ -82,13 +74,12 @@ class GenshinID(commands.Cog):
         ctx: ApplicationContext,
     ):
         """Discordアカウントと紐づいた原神のUIDを削除します。"""
-        await ctx.defer()
         if not ctx.interaction.user:
             return
         target = ctx.interaction.user
         if target:
             delete_data(collection="genshin_id", document=str(target.id))
-            await ctx.interaction.followup.send(
+            await ctx.respond(
                 f"{target}さんのUIDを削除しました", ephemeral=True
             )
             return
