@@ -30,11 +30,7 @@ class Utils(commands.Cog):
         member_joined: datetime = member.joined_at.astimezone(jst)
         joined = member_joined.strftime("%Y/%m/%d %H:%M:%S")
         desc = f"対象ユーザー:{member.mention}\nユーザー名:{member}\nID:`{member.id}`\nBot:{member.bot}"
-        roles = sorted(
-            [role for role in member.roles],
-            key=lambda role: role.position,
-            reverse=True,
-        )
+        roles = sorted(list(member.roles), key=lambda x: x.position, reverse=True)
         send_roles = "\n".join([role.mention for role in roles])
         avatars = [member.avatar, member.display_avatar]
         if member.default_avatar in avatars:
