@@ -70,7 +70,7 @@ class GenshinID(commands.Cog):
         self,
         ctx: ApplicationContext,
     ):
-        """Discordアカウントと紐づいた原神のUIDの一覧を返します。ただし自分のアカウントの"""
+        """Discordアカウントと紐づいた原神のUIDの一覧を返します。"""
         if not ctx.interaction.user:
             return
         # Get Data Frame
