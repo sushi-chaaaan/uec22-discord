@@ -85,6 +85,7 @@ class GenshinID(commands.Cog):
             embed = discord.Embed(
                 title="原神UIDリスト",
                 description=send_text,
+                color=1787875,
             )
             await ctx.respond(embeds=[embed], ephemeral=True)
         else:
