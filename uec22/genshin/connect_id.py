@@ -49,6 +49,7 @@ class GenshinID(commands.Cog):
         ctx: ApplicationContext,
         target: Option(discord.Member, description="検索するユーザー"),
     ):
+        """Discordアカウントと紐づいた原神のUIDを検索します。"""
         await ctx.defer()
         if not ctx.interaction.user:
             return
@@ -80,6 +81,7 @@ class GenshinID(commands.Cog):
         self,
         ctx: ApplicationContext,
     ):
+        """Discordアカウントと紐づいた原神のUIDを削除します。"""
         await ctx.defer()
         if not ctx.interaction.user:
             return
