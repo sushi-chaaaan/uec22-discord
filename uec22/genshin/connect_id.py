@@ -15,7 +15,7 @@ class GenshinID(commands.Cog):
         self.bot = bot
 
     @staticmethod
-    def get_frame(self, collection: str) -> pd.DataFrame:
+    def get_frame(collection: str) -> pd.DataFrame:
         """create DataFrame from FireStore"""
         _data = get_data(collection=collection)
         return pd.json_normalize(_data)
@@ -95,7 +95,7 @@ class GenshinID(commands.Cog):
             return
 
     @staticmethod
-    def search_all(self, df: pd.DataFrame) -> list[dict[str, int]]:
+    def search_all(df: pd.DataFrame) -> list[dict[str, int]]:
         """Create list of dict from DataFrame"""
         id_list = []
         for row in df.itertuples():
@@ -109,7 +109,7 @@ class GenshinID(commands.Cog):
         return id_list
 
     @staticmethod
-    def search_by_id(self, df: pd.DataFrame, target: int) -> Optional[int]:
+    def search_by_id(df: pd.DataFrame, target: int) -> Optional[int]:
         """Search bindded UID from Discord ID"""
         res_df = df[df["discord_id"] == target]
         if res_df.empty:
