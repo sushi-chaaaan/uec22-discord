@@ -21,12 +21,12 @@ class Message_Sys(commands.Cog):
             for suffix in avoid_suffix_list:
                 if message.content.endswith(suffix):
                     return
-            else:
-                embeds = await dispand(self.bot, message)
-                if embeds == []:
-                    return
-                await message.reply(embeds=embeds, mention_author=False)
+
+            embeds = await dispand(self.bot, message)
+            if embeds == []:
                 return
+            await message.reply(embeds=embeds, mention_author=False)
+            return
 
 
 def setup(bot):
