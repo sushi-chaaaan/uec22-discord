@@ -13,7 +13,8 @@ class Entrance(commands.Cog):
     async def _ent_cmd(self, ctx: commands.Context):
         await ctx.send(embeds=[self.ent_embed()], view=EnterVerifyView())
 
-    def ent_embed(self) -> Embed:
+    @staticmethod
+    def ent_embed() -> Embed:
         embed = Embed(
             color=1787875,
             title="ようこそ",

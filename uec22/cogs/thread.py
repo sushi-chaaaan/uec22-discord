@@ -77,8 +77,9 @@ class Thread(commands.Cog):
         await PagePage(text=board)._send(ctx.interaction)
         return
 
+    @staticmethod
     def _make_board(
-        self, interaction: discord.Interaction, category_id: Optional[int] = None
+        interaction: discord.Interaction, category_id: Optional[int] = None
     ) -> str:
         if category_id:
             channels = [
@@ -148,7 +149,8 @@ class Thread(commands.Cog):
         final_text = "\n\n".join(final_board)
         return final_text
 
-    async def compose_thread_create_log(self, thread: discord.Thread):
+    @staticmethod
+    async def compose_thread_create_log(thread: discord.Thread):
         if thread.owner is None or thread.parent is None:
             return
         embed = discord.Embed(

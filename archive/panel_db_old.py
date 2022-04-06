@@ -20,7 +20,8 @@ class FireStoreCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    def purse_data(self, _panel_dict: dict[str, str]):
+    @staticmethod
+    def purse_data(_panel_dict: dict[str, str]):
         guild_id = int(_panel_dict["guild_id"])
         channel_id = int(_panel_dict["channel_id"])
         message_id = int(_panel_dict["message_id"])
