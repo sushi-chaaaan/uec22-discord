@@ -1,3 +1,4 @@
+import math
 from typing import Optional
 
 import discord
@@ -55,6 +56,7 @@ class GenshinID(commands.Cog):
         if target:
             res = self.search_by_id(df=df, target=target.id)
             if res:
+                res = math.floor(res)
                 await ctx.respond(f"{target}さんの原神UIDは{str(res)}です", ephemeral=True)
                 return
             else:
