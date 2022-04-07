@@ -53,7 +53,10 @@ class MapPick(commands.Cog):
         if atk_future.done() is True and def_future.done() is True:
             atk_interaction = atk_future.result()
             def_interaction = def_future.result()
-            leaders = [leader_1, leader_2]
+            leaders = {
+                "atk": atk_interaction.user,
+                "def": def_interaction.user,
+            }
             if mode == "BO1":
                 atk_sender = InteractionSelectSender(
                     interaction=atk_interaction, menu_dict=map_dict
@@ -85,8 +88,9 @@ class MapPick(commands.Cog):
                     ephemeral=True,
                 )
                 selected_map = map_dict[selected_map[0]]
-                attacker_side = random.choice(leaders)
-                leaders.remove(attacker_side)
+                leader_list = [leaders["atk"], leaders["def"]]
+                attacker_side = random.choice(leader_list)
+                leader_list.remove(attacker_side)
                 embed = discord.Embed(
                     title="マップとサイドが決定しました。",
                     color=1787875,
@@ -103,7 +107,7 @@ class MapPick(commands.Cog):
                 )
                 embed.add_field(
                     name="防衛側",
-                    value=f"{leaders[0].mention}さんのチーム",
+                    value=f"{leader_list[0].mention}さんのチーム",
                     inline=False,
                 )
                 await atk_interaction.followup.send(embeds=[embed])
@@ -223,14 +227,43 @@ class MapPick(commands.Cog):
                 )
                 final_embeds.append(final_embed_1)
                 embed_map1 = discord.Embed(
-                    title= "第1マップ",
-                    description="第1マップ: " + selected_map_1,
+                    title="第1マップ",
+                    description=f"マップ: {selected_map_1}\n\nPicked by: {atk_pick_interaction.user.mention}",
                     color=1787875,
                 )
-                
-
-
-
+                if def_map1_side == "攻撃側":
+                    embed_map1.add_field(name="攻撃側", value=leaders["def"].mention)
+                    embed_map1.add_field(name="防衛側", value=leaders["atk"].mention)
+                else:
+                    embed_map1.add_field(name="攻撃側", value=leaders["atk"].mention)
+                    embed_map1.add_field(name="防衛側", value=leaders["def"].mention)
+                final_embeds.append(embed_map1)
+                embed_map2 = discord.Embed(
+                    title="第2マップ",
+                    description=f"マップ: {selected_map_2}\n\nPicked by: {def_pick_map2_interaction.user.mention}",
+                    color=1787875,
+                )
+                if atk_map2_side == "攻撃側":
+                    embed_map2.add_field(name="攻撃側", value=leaders["atk"].mention)
+                    embed_map2.add_field(name="防衛側", value=leaders["def"].mention)
+                else:
+                    embed_map2.add_field(name="攻撃側", value=leaders["def"].mention)
+                    embed_map2.add_field(name="防衛側", value=leaders["atk"].mention)
+                final_embeds.append(embed_map2)
+                embed_map3 = discord.Embed(
+                    title="第2マップ",
+                    description=f"マップ: {selected_map_3}\n\nPicked by: {def_pick_map3_interaction.user.mention}",
+                    color=1787875,
+                )
+                if atk_map3_side == "攻撃側":
+                    embed_map3.add_field(name="攻撃側", value=leaders["atk"].mention)
+                    embed_map3.add_field(name="防衛側", value=leaders["def"].mention)
+                else:
+                    embed_map3.add_field(name="攻撃側", value=leaders["def"].mention)
+                    embed_map3.add_field(name="防衛側", value=leaders["atk"].mention)
+                final_embeds.append(embed_map3)
+                await atk_interaction.followup.send(embeds=final_embeds)
+                return
 
 
 class StartPickview(discord.ui.View):
