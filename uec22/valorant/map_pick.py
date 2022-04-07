@@ -43,19 +43,18 @@ class MapPick(commands.Cog):
             await atk_future
             await def_future
             if atk_future.done() is True and def_future.done() is True:
-                if atk_future.result() is True and def_future.result() is True:
-                    await ctx.respond("入力を確認")
-                    atk_values, atk_interaction = atk_future.result()
-                    def_values, def_interaction = def_future.result()
-                    decided_map = decide_map(map_dict, atk_values, def_values)
-                    embed = discord.Embed(
-                        title="MAPが決定しました。",
-                        description=f"使用MAP: {decided_map}",
-                        color=1787875,
-                    )
-                    await atk_interaction.followup.send(embeds=[embed])
-                    return
-        await ctx.respond("BO3に近日対応予定です。")
+                await ctx.respond("入力を確認")
+                atk_values, atk_interaction = atk_future.result()
+                def_values, def_interaction = def_future.result()
+                decided_map = decide_map(map_dict, atk_values, def_values)
+                embed = discord.Embed(
+                    title="MAPが決定しました。",
+                    description=f"使用MAP: {decided_map}",
+                    color=1787875,
+                )
+                await atk_interaction.followup.send(embeds=[embed])
+                return
+            await ctx.respond("BO3に近日対応予定です。")
 
 
 def decide_map(map_dict: dict[str, str], atk_values: list, def_values: list) -> str:
@@ -122,9 +121,9 @@ class MapBanSelect(discord.ui.Select):
         self.future = future
 
     async def callback(self, interaction: discord.Interaction):
-        await interaction.response.defer()
         # return list of selected values and interaction
         self.future.set_result([[self.values], interaction])
+        await interaction.response.defer()
 
 
 def setup(bot):
