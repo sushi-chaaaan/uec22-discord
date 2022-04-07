@@ -44,6 +44,7 @@ class MapPick(commands.Cog):
             await def_future
             if atk_future.done() is True and def_future.done() is True:
                 if atk_future.result() is True and def_future.result() is True:
+                    await ctx.respond("入力を確認")
                     atk_values, atk_interaction = atk_future.result()
                     def_values, def_interaction = def_future.result()
                     decided_map = decide_map(map_dict, atk_values, def_values)
@@ -53,7 +54,6 @@ class MapPick(commands.Cog):
                         color=1787875,
                     )
                     await atk_interaction.followup.send(embeds=[embed])
-                    await def_interaction.followup.send(embeds=[embed])
                     return
         await ctx.respond("BO3に近日対応予定です。")
 
@@ -78,8 +78,9 @@ class StartPickview_BO1(discord.ui.View):
     ):
         view = discord.ui.View(timeout=None)
         view.add_item(MapBanSelect(self._atk, custom_id="atk_map_select"))
-        await interaction.response.send_message("BANするマップを2つ選択してください。", view=view)
-        return
+        await interaction.response.send_message(
+            "BANするマップを2つ選択してください。", view=view, ephemeral=True
+        )
 
     @discord.ui.button(label="防御側", style=discord.ButtonStyle.success)
     async def _defend(
@@ -87,8 +88,9 @@ class StartPickview_BO1(discord.ui.View):
     ):
         view = discord.ui.View(timeout=None)
         view.add_item(MapBanSelect(self._def, custom_id="def_map_select"))
-        await interaction.response.send_message("BANするマップを2つ選択してください。", view=view)
-        return
+        await interaction.response.send_message(
+            "BANするマップを2つ選択してください。", view=view, ephemeral=True
+        )
 
 
 def generate_select_from_dict(map_dict: dict) -> list[discord.SelectOption]:
