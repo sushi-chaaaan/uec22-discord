@@ -1,7 +1,5 @@
 import asyncio
 import random
-from turtle import title
-from typing import Optional
 
 import discord
 from discord import ApplicationContext, Option
@@ -22,8 +20,8 @@ map_dict = {
 }
 
 side_dict = {
-    "攻撃側": "攻撃側",
-    "防衛側": "防衛側",
+    "attack": "攻撃側",
+    "defend": "防衛側",
 }
 
 
@@ -43,7 +41,7 @@ class MapPick(commands.Cog):
         embed = discord.Embed(
             title="マップ選択システム",
             color=1787875,
-            description=f"マップのPick/BANを開始します。\n\n{leader_1.mention}さんはチームAボタンを、\n{leader_2.mention}さんはチームBボタンを押してください。\n\nもし間違ったボタンを押した場合はやり直してください。",
+            description=f"マップのPick/BANを開始します。\n\n{leader_1.mention}さんがチームAボタンを押した後、\n{leader_2.mention}さんはチームBボタンを押してください。\n\n押す順番やボタンを間違えると正しく動作しないことがあります。",
         )
         atk_future = asyncio.Future()
         def_future = asyncio.Future()
@@ -162,9 +160,10 @@ class MapPick(commands.Cog):
                     max_values=1,
                     ephemeral=True,
                 )
+                def_map1_side = side_dict[def_map1_side[0]]
                 # get map2
                 def_pick_map2_sender = InteractionSelectSender(
-                    interaction=def_decide_side_map1_interaction, menu_dict=map_pool
+                    interaction=def_ban_interaction, menu_dict=map_pool
                 )
                 (
                     selected_map_2,
@@ -191,6 +190,7 @@ class MapPick(commands.Cog):
                     max_values=1,
                     ephemeral=True,
                 )
+                atk_map2_side = side_dict[atk_map2_side[0]]
                 # get map3
                 def_pick_map3_sender = InteractionSelectSender(
                     interaction=def_pick_map2_interaction, menu_dict=map_pool
@@ -220,6 +220,7 @@ class MapPick(commands.Cog):
                     max_values=1,
                     ephemeral=True,
                 )
+                atk_map3_side = side_dict[atk_map3_side[0]]
                 final_embeds = []
                 final_embed_1 = discord.Embed(
                     title="マップとサイドが決定しました。",
@@ -231,7 +232,7 @@ class MapPick(commands.Cog):
                     description=f"マップ: {selected_map_1}\n\nPicked by: {atk_pick_interaction.user.mention}",
                     color=1787875,
                 )
-                if def_map1_side == "攻撃側":
+                if def_map1_side == "attack":
                     embed_map1.add_field(name="攻撃側", value=leaders["def"].mention)
                     embed_map1.add_field(name="防衛側", value=leaders["atk"].mention)
                 else:
@@ -243,7 +244,7 @@ class MapPick(commands.Cog):
                     description=f"マップ: {selected_map_2}\n\nPicked by: {def_pick_map2_interaction.user.mention}",
                     color=1787875,
                 )
-                if atk_map2_side == "攻撃側":
+                if atk_map2_side == "attack":
                     embed_map2.add_field(name="攻撃側", value=leaders["atk"].mention)
                     embed_map2.add_field(name="防衛側", value=leaders["def"].mention)
                 else:
@@ -251,11 +252,11 @@ class MapPick(commands.Cog):
                     embed_map2.add_field(name="防衛側", value=leaders["atk"].mention)
                 final_embeds.append(embed_map2)
                 embed_map3 = discord.Embed(
-                    title="第2マップ",
+                    title="第3マップ",
                     description=f"マップ: {selected_map_3}\n\nPicked by: {def_pick_map3_interaction.user.mention}",
                     color=1787875,
                 )
-                if atk_map3_side == "攻撃側":
+                if atk_map3_side == "attack":
                     embed_map3.add_field(name="攻撃側", value=leaders["atk"].mention)
                     embed_map3.add_field(name="防衛側", value=leaders["def"].mention)
                 else:
