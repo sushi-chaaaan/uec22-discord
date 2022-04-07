@@ -46,8 +46,6 @@ class MapPick(commands.Cog):
                 await ctx.respond("入力を確認")
                 atk_values, atk_interaction = atk_future.result()
                 def_values, def_interaction = def_future.result()
-                await ctx.respond("\n".join(atk_values))
-                await ctx.respond("\n".join(def_values))
                 decided_map = decide_map(map_dict, atk_values, def_values)
                 embed = discord.Embed(
                     title="MAPが決定しました。",
