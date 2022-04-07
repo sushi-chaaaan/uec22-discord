@@ -233,11 +233,19 @@ class MapPick(commands.Cog):
                     color=1787875,
                 )
                 if def_map1_side == "attack":
-                    embed_map1.add_field(name="攻撃側", value=leaders["def"].mention)
-                    embed_map1.add_field(name="防衛側", value=leaders["atk"].mention)
+                    embed_map1.add_field(
+                        name="攻撃側", value=leaders["def"].mention, inline=False
+                    )
+                    embed_map1.add_field(
+                        name="防衛側", value=leaders["atk"].mention, inline=False
+                    )
                 else:
-                    embed_map1.add_field(name="攻撃側", value=leaders["atk"].mention)
-                    embed_map1.add_field(name="防衛側", value=leaders["def"].mention)
+                    embed_map1.add_field(
+                        name="攻撃側", value=leaders["atk"].mention, inline=False
+                    )
+                    embed_map1.add_field(
+                        name="防衛側", value=leaders["def"].mention, inline=False
+                    )
                 final_embeds.append(embed_map1)
                 embed_map2 = discord.Embed(
                     title="第2マップ",
@@ -245,11 +253,19 @@ class MapPick(commands.Cog):
                     color=1787875,
                 )
                 if atk_map2_side == "attack":
-                    embed_map2.add_field(name="攻撃側", value=leaders["atk"].mention)
-                    embed_map2.add_field(name="防衛側", value=leaders["def"].mention)
+                    embed_map2.add_field(
+                        name="攻撃側", value=leaders["atk"].mention, inline=False
+                    )
+                    embed_map2.add_field(
+                        name="防衛側", value=leaders["def"].mention, inline=False
+                    )
                 else:
-                    embed_map2.add_field(name="攻撃側", value=leaders["def"].mention)
-                    embed_map2.add_field(name="防衛側", value=leaders["atk"].mention)
+                    embed_map2.add_field(
+                        name="攻撃側", value=leaders["def"].mention, inline=False
+                    )
+                    embed_map2.add_field(
+                        name="防衛側", value=leaders["atk"].mention, inline=False
+                    )
                 final_embeds.append(embed_map2)
                 embed_map3 = discord.Embed(
                     title="第3マップ",
@@ -257,11 +273,19 @@ class MapPick(commands.Cog):
                     color=1787875,
                 )
                 if atk_map3_side == "attack":
-                    embed_map3.add_field(name="攻撃側", value=leaders["atk"].mention)
-                    embed_map3.add_field(name="防衛側", value=leaders["def"].mention)
+                    embed_map3.add_field(
+                        name="攻撃側", value=leaders["atk"].mention, inline=False
+                    )
+                    embed_map3.add_field(
+                        name="防衛側", value=leaders["def"].mention, inline=False
+                    )
                 else:
-                    embed_map3.add_field(name="攻撃側", value=leaders["def"].mention)
-                    embed_map3.add_field(name="防衛側", value=leaders["atk"].mention)
+                    embed_map3.add_field(
+                        name="攻撃側", value=leaders["def"].mention, inline=False
+                    )
+                    embed_map3.add_field(
+                        name="防衛側", value=leaders["atk"].mention, inline=False
+                    )
                 final_embeds.append(embed_map3)
                 await atk_interaction.followup.send(embeds=final_embeds)
                 return
