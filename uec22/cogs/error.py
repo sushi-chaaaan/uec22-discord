@@ -81,12 +81,10 @@ class ErrorCatch(commands.Cog):
 
         try:
             await ctx.respond(
-                content=f"予期せぬエラーが発生しました。\nID: {error_id}", ephemeral=False
+                content=f"予期せぬエラーが発生しました。\nID: {error_id}\n\nException: {exception}",
             )
         except Exception:
             pass
-        finally:
-            traceback.print_exc()
 
 
 def setup(bot):
