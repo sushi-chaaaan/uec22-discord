@@ -3,7 +3,6 @@ from discord.commands import message_command
 from discord.ext import commands
 from ids import guild_id
 
-
 # PollEmoji
 poll_emoji_list = [
     "\N{Large Red Circle}",
@@ -50,8 +49,13 @@ class Poll(commands.Cog):
                 name="\N{Large Green Circle}",
                 value="Yes",
             )
-            embed.add_field(name="\N{Large Red Circle}", value="No")
-            embed.set_author(name="投票")
+            embed.add_field(
+                name="\N{Large Red Circle}",
+                value="No",
+            )
+            embed.set_author(
+                name="投票",
+            )
             poll_yes_emoji = "\N{Large Green Circle}"
             poll_no_emoji = "\N{Large Red Circle}"
             message = await ctx.send(embed=embed)
