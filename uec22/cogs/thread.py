@@ -28,12 +28,6 @@ class Thread(commands.Cog):
         thread_member_list = await thread.fetch_members()
         if self.bot.user.id in [x.id for x in thread_member_list]:
             return
-        else:
-            # channel = self.bot.get_channel(thread_log_channel)
-            # embed = await self.compose_thread_create_log(thread)
-            # await channel.send(embed=embed)
-            # return
-            pass
 
     @commands.Cog.listener(name="on_thread_update")
     async def detect_archive(self, before, after):
@@ -69,11 +63,6 @@ class Thread(commands.Cog):
         else:
             id = None
         board = self._make_board(ctx.interaction, category_id=id)
-        # print(board)
-        # await ctx.respond('Done', ephemeral=True)
-        # view = EscapeButton(board)
-        # tracker = ViewTracker(view, timeout=None)
-        # await tracker.track(InteractionProvider(ctx.interaction))
         await PagePage(text=board)._send(ctx.interaction)
         return
 
@@ -183,7 +172,6 @@ class Page(PageView):
         return Message(content=self.text)
 
     async def on_appear(self, paginator: PaginationView) -> None:
-        # print(f"appeared page: {paginator.page}")
         pass
 
 
