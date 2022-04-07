@@ -1,11 +1,15 @@
 import asyncio
-from random import random
+import random
+from turtle import title
+from typing import Optional
 
 import discord
 from discord import ApplicationContext, Option
 from discord.commands import slash_command
 from discord.ext import commands
 from ids import guild_id
+
+from .sender import InteractionSelectSender
 
 map_dict = {
     "1": "Ascent",
@@ -15,6 +19,11 @@ map_dict = {
     "5": "Breeze",
     "6": "Icebox",
     "7": "Haven",
+}
+
+side_dict = {
+    "攻撃側": "攻撃側",
+    "防衛側": "防衛側",
 }
 
 
@@ -27,102 +36,225 @@ class MapPick(commands.Cog):
         self,
         ctx: ApplicationContext,
         mode: Option(str, "モードを選択してください。", choices=["BO1", "BO3"]),
+        leader_1: Option(discord.Member, "一人目のリーダーを選択してください。"),
+        leader_2: Option(discord.Member, "二人目のリーダーを選択してください。"),
     ):
         """MAPのPick/BANを開始します。"""
         embed = discord.Embed(
             title="マップ選択システム",
             color=1787875,
-            description="マップのPick/Banを開始します。\n攻撃側・防衛側各一人ずつがボタンを\n押して指示に従ってください。",
+            description=f"マップのPick/BANを開始します。\n\n{leader_1.mention}さんはチームAボタンを、\n{leader_2.mention}さんはチームBボタンを押してください。\n\nもし間違ったボタンを押した場合はやり直してください。",
         )
         atk_future = asyncio.Future()
         def_future = asyncio.Future()
-        if mode == "BO1":
-            await ctx.respond(
-                embeds=[embed], view=StartPickview_BO1(atk_future, def_future)
-            )
-            await atk_future
-            await def_future
-            if atk_future.done() is True and def_future.done() is True:
-                await ctx.respond("入力を確認")
-                atk_values, atk_interaction = atk_future.result()
-                def_values, def_interaction = def_future.result()
-                decided_map = decide_map(map_dict, atk_values, def_values)
+        await ctx.respond(embeds=[embed], view=StartPickview(atk_future, def_future))
+        await atk_future
+        await def_future
+        if atk_future.done() is True and def_future.done() is True:
+            atk_interaction = atk_future.result()
+            def_interaction = def_future.result()
+            leaders = [leader_1, leader_2]
+            if mode == "BO1":
+                atk_sender = InteractionSelectSender(
+                    interaction=atk_interaction, menu_dict=map_dict
+                )
+                atk_ban, atk_ban_interaction = await atk_sender.send(
+                    title="BANするマップを2つ選択してください。",
+                    min_values=2,
+                    max_values=2,
+                    ephemeral=True,
+                )
+                map_pool = {k: v for k, v in map_dict.items() if k not in atk_ban}
+                def_sender = InteractionSelectSender(
+                    interaction=def_interaction, menu_dict=map_pool
+                )
+                def_ban, def_ban_interaction = await def_sender.send(
+                    title="BANするマップを2つ選択してください。",
+                    min_values=2,
+                    max_values=2,
+                    ephemeral=True,
+                )
+                map_pool = {k: v for k, v in map_pool.items() if k not in def_ban}
+                atk_pick_sender = InteractionSelectSender(
+                    interaction=atk_ban_interaction, menu_dict=map_pool
+                )
+                selected_map, atk_pick_interaction = await atk_pick_sender.send(
+                    title="使用するマップを選択してください。",
+                    min_values=1,
+                    max_values=1,
+                    ephemeral=True,
+                )
+                selected_map = map_dict[selected_map[0]]
+                attacker_side = random.choice(leaders)
+                leaders.remove(attacker_side)
                 embed = discord.Embed(
-                    title="MAPが決定しました。",
-                    description=f"使用MAP: {decided_map}",
+                    title="マップとサイドが決定しました。",
                     color=1787875,
+                )
+                embed.add_field(
+                    name="マップ",
+                    value=f"{selected_map}",
+                    inline=False,
+                )
+                embed.add_field(
+                    name="攻撃側",
+                    value=f"{attacker_side.mention}さんのチーム",
+                    inline=False,
+                )
+                embed.add_field(
+                    name="防衛側",
+                    value=f"{leaders[0].mention}さんのチーム",
+                    inline=False,
                 )
                 await atk_interaction.followup.send(embeds=[embed])
                 return
-            await ctx.respond("BO3に近日対応予定です。")
+            elif mode == "BO3":
+                atk_sender = InteractionSelectSender(
+                    interaction=atk_interaction, menu_dict=map_dict
+                )
+                atk_ban, atk_ban_interaction = await atk_sender.send(
+                    title="BANするマップを1つ選択してください。",
+                    min_values=1,
+                    max_values=1,
+                    ephemeral=True,
+                )
+                map_pool = {k: v for k, v in map_dict.items() if k not in atk_ban}
+                def_sender = InteractionSelectSender(
+                    interaction=def_interaction, menu_dict=map_pool
+                )
+                def_ban, def_ban_interaction = await def_sender.send(
+                    title="BANするマップを1つ選択してください。",
+                    min_values=1,
+                    max_values=1,
+                    ephemeral=True,
+                )
+                map_pool = {k: v for k, v in map_pool.items() if k not in def_ban}
+                # get map1
+                atk_pick_sender = InteractionSelectSender(
+                    interaction=atk_ban_interaction, menu_dict=map_pool
+                )
+                selected_map_1, atk_pick_interaction = await atk_pick_sender.send(
+                    title="第1マップを選択してください。",
+                    min_values=1,
+                    max_values=1,
+                    ephemeral=True,
+                )
+                map_pool = {
+                    k: v for k, v in map_pool.items() if k not in selected_map_1
+                }
+                selected_map_1 = map_dict[selected_map_1[0]]
+                # get map1 side
+                def_decide_side_map1_sender = InteractionSelectSender(
+                    interaction=def_ban_interaction, menu_dict=side_dict
+                )
+                (
+                    def_map1_side,
+                    def_decide_side_map1_interaction,
+                ) = await def_decide_side_map1_sender.send(
+                    title="第1マップが決定しました。",
+                    description=f"第1マップ: {selected_map_1}",
+                    placeholder="第1マップのサイドを選択してください。",
+                    min_values=1,
+                    max_values=1,
+                    ephemeral=True,
+                )
+                # get map2
+                def_pick_map2_sender = InteractionSelectSender(
+                    interaction=def_decide_side_map1_interaction, menu_dict=map_pool
+                )
+                (
+                    selected_map_2,
+                    def_pick_map2_interaction,
+                ) = await def_pick_map2_sender.send(
+                    title="第2マップを選択してください。", min_values=1, max_values=1, ephemeral=True
+                )
+                map_pool = {
+                    k: v for k, v in map_pool.items() if k not in selected_map_2
+                }
+                selected_map_2 = map_dict[selected_map_2[0]]
+                # get map2 side
+                atk_decide_side_map2_sender = InteractionSelectSender(
+                    interaction=atk_pick_interaction, menu_dict=side_dict
+                )
+                (
+                    atk_map2_side,
+                    atk_decide_side_map2_interaction,
+                ) = await atk_decide_side_map2_sender.send(
+                    title="第2マップが決定しました。",
+                    description=f"第2マップ: {selected_map_2}",
+                    placeholder="第2マップのサイドを選択してください。",
+                    min_values=1,
+                    max_values=1,
+                    ephemeral=True,
+                )
+                # get map3
+                def_pick_map3_sender = InteractionSelectSender(
+                    interaction=def_pick_map2_interaction, menu_dict=map_pool
+                )
+                (
+                    selected_map_3,
+                    def_pick_map3_interaction,
+                ) = await def_pick_map3_sender.send(
+                    title="第3マップを選択してください。", min_values=1, max_values=1, ephemeral=True
+                )
+                map_pool = {
+                    k: v for k, v in map_pool.items() if k not in selected_map_3
+                }
+                selected_map_3 = map_dict[selected_map_3[0]]
+                # get map3 side
+                atk_decide_side_map3_sender = InteractionSelectSender(
+                    interaction=atk_decide_side_map2_interaction, menu_dict=side_dict
+                )
+                (
+                    atk_map3_side,
+                    atk_decide_side_map3_interaction,
+                ) = await atk_decide_side_map3_sender.send(
+                    title="第3マップが決定しました。",
+                    description=f"第3マップ: {selected_map_3}",
+                    placeholder="第3マップのサイドを選択してください。",
+                    min_values=1,
+                    max_values=1,
+                    ephemeral=True,
+                )
+                final_embeds = []
+                final_embed_1 = discord.Embed(
+                    title="マップとサイドが決定しました。",
+                    color=1787875,
+                )
+                final_embeds.append(final_embed_1)
+                embed_map1 = discord.Embed(
+                    title= "第1マップ",
+                    description="第1マップ: " + selected_map_1,
+                    color=1787875,
+                )
+                
 
 
-def decide_map(map_dict: dict[str, str], atk_values: list, def_values: list) -> str:
-    values = atk_values + def_values
-    set_values = set(values)
-    map_pool = [v for k, v in map_dict.items() if k not in set_values]
-    decided_map = random.choice(map_pool)
-    return decided_map
 
 
-class StartPickview_BO1(discord.ui.View):
-    def __init__(self, atk_future: asyncio.Future, def_future: asyncio.Future):
+
+class StartPickview(discord.ui.View):
+    def __init__(
+        self,
+        atk_future: asyncio.Future,
+        def_future: asyncio.Future,
+    ):
         super().__init__(timeout=None)
         self._atk = atk_future
         self._def = def_future
 
-    @discord.ui.button(label="攻撃側", style=discord.ButtonStyle.danger)
+    @discord.ui.button(label="チームA", style=discord.ButtonStyle.danger)
     async def _attack(
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
-        view = discord.ui.View(timeout=None)
-        view.add_item(MapBanSelect(self._atk, custom_id="atk_map_select"))
-        await interaction.response.send_message(
-            "BANするマップを2つ選択してください。", view=view, ephemeral=True
-        )
+        self._atk.set_result(interaction)
+        await interaction.response.defer()
 
-    @discord.ui.button(label="防御側", style=discord.ButtonStyle.success)
+    @discord.ui.button(label="チームB", style=discord.ButtonStyle.success)
     async def _defend(
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
-        view = discord.ui.View(timeout=None)
-        view.add_item(MapBanSelect(self._def, custom_id="def_map_select"))
-        await interaction.response.send_message(
-            "BANするマップを2つ選択してください。", view=view, ephemeral=True
-        )
-
-
-def generate_select_from_dict(map_dict: dict) -> list[discord.SelectOption]:
-    options: list[discord.SelectOption] = []
-    for key, value in map_dict.items():
-        opt = discord.SelectOption(label=value, value=key)
-        options.append(opt)
-    return options
-
-
-class MapBanSelect(discord.ui.Select):
-    def __init__(
-        self,
-        future: asyncio.Future,
-        *,
-        custom_id: str,
-        placeholder: str = "BANするマップを2つ選択してください。",
-        min_values: int = 2,
-        max_values: int = 2,
-    ) -> None:
-        options = generate_select_from_dict(map_dict)
-        super().__init__(
-            custom_id=custom_id,
-            placeholder=placeholder,
-            min_values=min_values,
-            max_values=max_values,
-            options=options,
-        )
-        self.future = future
-
-    async def callback(self, interaction: discord.Interaction):
-        # return list of selected values and interaction
-        self.future.set_result([[self.values], interaction])
+        self._def.set_result(interaction)
         await interaction.response.defer()
 
 
