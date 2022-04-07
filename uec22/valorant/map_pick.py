@@ -39,7 +39,7 @@ class MapPick(commands.Cog):
     ):
         """MAPのPick/BANを開始します。"""
         embed = discord.Embed(
-            title=f"マップ選択システム(モード:{mode})",
+            title=f"マップ選択システム(モード: {mode})",
             color=1787875,
             description=f"マップのPick/BANを開始します。\n\n{leader_1.mention}さんがチームAボタンを押した後、\n{leader_2.mention}さんはチームBボタンを押してください。\n\n押す順番やボタンを間違えると正しく動作しないことがあります。",
         )
