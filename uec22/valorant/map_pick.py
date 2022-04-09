@@ -56,6 +56,7 @@ class MapPick(commands.Cog):
                 "def": def_interaction.user,
             }
             if mode == "BO1":
+                # get ban from leader #1
                 atk_sender = SelectSender(interaction=atk_interaction)
                 atk_ban, atk_ban_interaction = await atk_sender.send(
                     menu_dict=map_dict,
@@ -65,6 +66,7 @@ class MapPick(commands.Cog):
                     ephemeral=True,
                 )
                 map_pool = {k: v for k, v in map_dict.items() if k not in atk_ban}
+                # get ban from leader #2
                 def_sender = SelectSender(interaction=def_interaction)
                 def_ban, def_ban_interaction = await def_sender.send(
                     menu_dict=map_pool,
@@ -74,6 +76,7 @@ class MapPick(commands.Cog):
                     ephemeral=True,
                 )
                 map_pool = {k: v for k, v in map_pool.items() if k not in def_ban}
+                # get pick from leader #1
                 atk_pick_sender = SelectSender(interaction=atk_ban_interaction)
                 selected_map, atk_pick_interaction = await atk_pick_sender.send(
                     menu_dict=map_pool,
