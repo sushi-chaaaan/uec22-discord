@@ -19,19 +19,16 @@ class RolePanel(commands.Cog):
     async def _role_panel(
         self,
         ctx: commands.Context,
-        target: Optional[discord.TextChannel] = None,
+        target: discord.TextChannel,
         *role_id: str,
     ):
         # check param
-        if target is None:
-            await ctx.reply(content="送信先チャンネルの指定が必要です。")
-            return
         if role_id == []:
             await ctx.reply(content="パネルに載せるロールが最低一つ必要です。")
             return
-        if len(role_id) > 6:
+        if len(role_id) > 25:
             await ctx.reply(
-                content="一度に指定できるロールの数は5つまでです。\n6つ以上指定したい場合は、2つ以上のパネルに分けてください。"
+                content="一度に指定できるロールの数は25個までです。\n25個以上指定したい場合は、2つ以上のパネルに分けてください。"
             )
             return
         # get role
@@ -84,7 +81,7 @@ class RolePanel(commands.Cog):
                         "channel_id": str(panel_msg.channel.id),
                         "message_id": str(panel_msg.id),
                     }
-                    for num in range(5):
+                    for num in range(len(role_id)):
                         try:
                             db_dict[f"role_{num+1}"] = role_id[num]
                         except Exception:
@@ -155,19 +152,50 @@ class RolePanelModal(Modal):
 class RolePanelView(discord.ui.View):
     def __init__(self, roles: list[discord.Role], disabled: bool = False):
         super().__init__(timeout=None)
-        role_buttons = [RoleButton(role, disabled=disabled) for role in roles]
-        for button in role_buttons:
-            self.add_item(button)
+        sub_length = configure_sublist_length(len(roles))
+        splitted_list = split_list(roles, sub_length)
+        for num, sub_list in enumerate(splitted_list):
+            role_buttons = [
+                RoleButton(
+                    role=role,
+                    row=num,
+                    style=discord.ButtonStyle.secondary,
+                    disabled=disabled,
+                )
+                for role in sub_list
+            ]
+            for button in role_buttons:
+                self.add_item(button)
+
+
+def split_list(list_: list, length: int) -> list:
+    return [list_[i : i + length] for i in range(0, len(list_), length)]
+
+
+def configure_sublist_length(length: int) -> int:
+    if length in [1, 2, 3, 4, 5, 9, 10, 13, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25]:
+        return 5
+    elif length in [7, 8, 11, 12, 16]:
+        return 4
+    else:
+        return 3
 
 
 # ロールパネルのボタン
 class RoleButton(discord.ui.Button):
-    def __init__(self, role: discord.Role, **kwargs):
+    def __init__(
+        self,
+        role: discord.Role,
+        row: int,
+        style: discord.ButtonStyle = discord.ButtonStyle.blurple,
+        **kwargs,
+    ):
         self.role = role
         super().__init__(
-            style=discord.ButtonStyle.blurple,
+            style=style,
             label=role.name,
             custom_id=f"role_button_{role.id}",
+            row=row,
             **kwargs,
         )
 
