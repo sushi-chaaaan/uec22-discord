@@ -9,6 +9,7 @@ import discord
 from discord.ext import commands
 
 from data.firestore import get_data
+from ids import guild_id, su_role
 from uec22.cogs.entrance import EnterVerifyView
 from uec22.cogs.forum import QuestionView
 from uec22.role_panel.panel_db import set_board
@@ -38,6 +39,10 @@ EXTENSION_LIST = [
     "uec22.valorant.map_pick",
 ]
 
+PERSISTENT_VIEWS = [
+    QuestionView(),
+    EnterVerifyView(),
+]
 
 discord.http.API_VERSION = 9
 
@@ -46,7 +51,7 @@ intents = discord.Intents.default()
 intents.typing = False
 
 
-# Bot Class
+# Bot Constructor
 class MyBot(commands.Bot):
     def __init__(self, command_prefix="!ue ", **options):
         super().__init__(command_prefix, intents=intents, **options)
@@ -60,10 +65,8 @@ class MyBot(commands.Bot):
 
     # run when boot is done preparing to run.
     async def on_ready(self):
-        PERSISTENT_VIEWS = [
-            QuestionView(),
-            EnterVerifyView(),
-        ]
+
+        # Set View
         if not self.persistent_views_added:
             for view in PERSISTENT_VIEWS:
                 try:
@@ -78,9 +81,20 @@ class MyBot(commands.Bot):
             else:
                 for panel in panels:
                     await set_board(self, panel)
-            # self.add_view(RolePanel(roles=_roles), message_id=int(panel["message_id"]))
             self.persistent_views_added = True
-        info = ""
+
+        # Disarm superuser
+        guild = self.get_guild(guild_id)
+        if not guild:
+            return
+        su = guild.get_role(su_role)
+        if not su or not su.members:
+            return
+        for mem in su.members:
+            await mem.remove_roles(su)
+        print("Disarmed superuser!")
+
+        # Send ready message
         if self.user is None:
             info = "cannot get my own infomation."
         else:
