@@ -167,7 +167,7 @@ class RolePanelView(discord.ui.View):
                 self.add_item(button)
 
 
-def split_list(list_: list, length: int) -> list:
+def split_list(list_: list[discord.Role], length: int) -> list[list[discord.Role]]:
     return [list_[i : i + length] for i in range(0, len(list_), length)]
 
 
