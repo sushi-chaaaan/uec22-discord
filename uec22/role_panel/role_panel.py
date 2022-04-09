@@ -1,5 +1,4 @@
 import asyncio
-from typing import Optional
 
 import discord
 from data.firestore import add_data
