@@ -4,20 +4,20 @@ from typing import Optional
 import discord
 
 
-class InteractionSelectSender:
-    def __init__(self, interaction: discord.Interaction, menu_dict: dict[str, str]):
+class SelectSender:
+    def __init__(self, interaction: discord.Interaction):
         self._interaction = interaction
-        self._menu_dict = menu_dict
 
     async def send(
         self,
+        menu_dict: dict[str, str],
         *,
         title: Optional[str] = None,
         description: Optional[str] = None,
         placeholder: Optional[str] = None,
         min_values: int,
         max_values: int,
-        ephemeral: bool = False
+        ephemeral: bool = False,
     ) -> tuple[list[str], discord.Interaction]:
         _future = asyncio.Future()
         embed = discord.Embed(
@@ -26,6 +26,7 @@ class InteractionSelectSender:
             color=1787875,
         )
         view = self.generate_selectview(
+            menu_dict=menu_dict,
             placeholder=placeholder,
             min_values=min_values,
             max_values=max_values,
@@ -38,6 +39,8 @@ class InteractionSelectSender:
 
     def generate_selectview(
         self,
+        menu_dict: dict[str, str],
+        *,
         placeholder: Optional[str],
         min_values: int,
         max_values: int,
@@ -45,7 +48,7 @@ class InteractionSelectSender:
     ) -> discord.ui.View:
         view = discord.ui.View(timeout=None)
         options: list[discord.SelectOption] = []
-        for key, value in self._menu_dict.items():
+        for key, value in menu_dict.items():
             opt = discord.SelectOption(label=value, value=key)
             options.append(opt)
         select = _Select(
@@ -74,7 +77,7 @@ class _Select(discord.ui.Select):
         placeholder: Optional[str] = None,
         min_values: int,
         max_values: int,
-        options: list[discord.SelectOption]
+        options: list[discord.SelectOption],
     ) -> None:
         super().__init__(
             placeholder=placeholder,

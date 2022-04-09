@@ -7,7 +7,7 @@ from discord.commands import slash_command
 from discord.ext import commands
 from ids import guild_id
 
-from .sender import InteractionSelectSender
+from .sender import SelectSender
 
 map_dict = {
     "1": "Ascent",
@@ -56,30 +56,27 @@ class MapPick(commands.Cog):
                 "def": def_interaction.user,
             }
             if mode == "BO1":
-                atk_sender = InteractionSelectSender(
-                    interaction=atk_interaction, menu_dict=map_dict
-                )
+                atk_sender = SelectSender(interaction=atk_interaction)
                 atk_ban, atk_ban_interaction = await atk_sender.send(
+                    menu_dict=map_dict,
                     title="BANするマップを2つ選択してください。",
                     min_values=2,
                     max_values=2,
                     ephemeral=True,
                 )
                 map_pool = {k: v for k, v in map_dict.items() if k not in atk_ban}
-                def_sender = InteractionSelectSender(
-                    interaction=def_interaction, menu_dict=map_pool
-                )
+                def_sender = SelectSender(interaction=def_interaction)
                 def_ban, def_ban_interaction = await def_sender.send(
+                    menu_dict=map_pool,
                     title="BANするマップを2つ選択してください。",
                     min_values=2,
                     max_values=2,
                     ephemeral=True,
                 )
                 map_pool = {k: v for k, v in map_pool.items() if k not in def_ban}
-                atk_pick_sender = InteractionSelectSender(
-                    interaction=atk_ban_interaction, menu_dict=map_pool
-                )
+                atk_pick_sender = SelectSender(interaction=atk_ban_interaction)
                 selected_map, atk_pick_interaction = await atk_pick_sender.send(
+                    menu_dict=map_pool,
                     title="使用するマップを選択してください。",
                     min_values=1,
                     max_values=1,
@@ -111,20 +108,18 @@ class MapPick(commands.Cog):
                 await atk_interaction.followup.send(embeds=[embed])
                 return
             elif mode == "BO3":
-                atk_sender = InteractionSelectSender(
-                    interaction=atk_interaction, menu_dict=map_dict
-                )
+                atk_sender = SelectSender(interaction=atk_interaction)
                 atk_ban, atk_ban_interaction = await atk_sender.send(
+                    menu_dict=map_dict,
                     title="BANするマップを1つ選択してください。",
                     min_values=1,
                     max_values=1,
                     ephemeral=True,
                 )
                 map_pool = {k: v for k, v in map_dict.items() if k not in atk_ban}
-                def_sender = InteractionSelectSender(
-                    interaction=def_interaction, menu_dict=map_pool
-                )
+                def_sender = SelectSender(interaction=def_interaction)
                 def_ban, def_ban_interaction = await def_sender.send(
+                    menu_dict=map_pool,
                     title="BANするマップを1つ選択してください。",
                     min_values=1,
                     max_values=1,
@@ -132,10 +127,9 @@ class MapPick(commands.Cog):
                 )
                 map_pool = {k: v for k, v in map_pool.items() if k not in def_ban}
                 # get map1
-                atk_pick_sender = InteractionSelectSender(
-                    interaction=atk_ban_interaction, menu_dict=map_pool
-                )
+                atk_pick_sender = SelectSender(interaction=atk_ban_interaction)
                 selected_map_1, atk_pick_interaction = await atk_pick_sender.send(
+                    menu_dict=map_pool,
                     title="第1マップを選択してください。",
                     min_values=1,
                     max_values=1,
@@ -146,13 +140,14 @@ class MapPick(commands.Cog):
                 }
                 selected_map_1 = map_dict[selected_map_1[0]]
                 # get map1 side
-                def_decide_side_map1_sender = InteractionSelectSender(
-                    interaction=def_ban_interaction, menu_dict=side_dict
+                def_decide_side_map1_sender = SelectSender(
+                    interaction=def_ban_interaction
                 )
                 (
                     def_map1_side,
                     def_decide_side_map1_interaction,
                 ) = await def_decide_side_map1_sender.send(
+                    menu_dict=side_dict,
                     title="第1マップが決定しました。",
                     description=f"第1マップ: {selected_map_1}",
                     placeholder="第1マップのサイドを選択してください。",
@@ -162,27 +157,30 @@ class MapPick(commands.Cog):
                 )
                 def_map1_side = side_dict[def_map1_side[0]]
                 # get map2
-                def_pick_map2_sender = InteractionSelectSender(
-                    interaction=def_ban_interaction, menu_dict=map_pool
-                )
+                def_pick_map2_sender = SelectSender(interaction=def_ban_interaction)
                 (
                     selected_map_2,
                     def_pick_map2_interaction,
                 ) = await def_pick_map2_sender.send(
-                    title="第2マップを選択してください。", min_values=1, max_values=1, ephemeral=True
+                    menu_dict=map_pool,
+                    title="第2マップを選択してください。",
+                    min_values=1,
+                    max_values=1,
+                    ephemeral=True,
                 )
                 map_pool = {
                     k: v for k, v in map_pool.items() if k not in selected_map_2
                 }
                 selected_map_2 = map_dict[selected_map_2[0]]
                 # get map2 side
-                atk_decide_side_map2_sender = InteractionSelectSender(
-                    interaction=atk_pick_interaction, menu_dict=side_dict
+                atk_decide_side_map2_sender = SelectSender(
+                    interaction=atk_pick_interaction
                 )
                 (
                     atk_map2_side,
                     atk_decide_side_map2_interaction,
                 ) = await atk_decide_side_map2_sender.send(
+                    menu_dict=side_dict,
                     title="第2マップが決定しました。",
                     description=f"第2マップ: {selected_map_2}",
                     placeholder="第2マップのサイドを選択してください。",
@@ -192,27 +190,32 @@ class MapPick(commands.Cog):
                 )
                 atk_map2_side = side_dict[atk_map2_side[0]]
                 # get map3
-                def_pick_map3_sender = InteractionSelectSender(
-                    interaction=def_pick_map2_interaction, menu_dict=map_pool
+                def_pick_map3_sender = SelectSender(
+                    interaction=def_pick_map2_interaction
                 )
                 (
                     selected_map_3,
                     def_pick_map3_interaction,
                 ) = await def_pick_map3_sender.send(
-                    title="第3マップを選択してください。", min_values=1, max_values=1, ephemeral=True
+                    menu_dict=map_pool,
+                    title="第3マップを選択してください。",
+                    min_values=1,
+                    max_values=1,
+                    ephemeral=True,
                 )
                 map_pool = {
                     k: v for k, v in map_pool.items() if k not in selected_map_3
                 }
                 selected_map_3 = map_dict[selected_map_3[0]]
                 # get map3 side
-                atk_decide_side_map3_sender = InteractionSelectSender(
-                    interaction=atk_decide_side_map2_interaction, menu_dict=side_dict
+                atk_decide_side_map3_sender = SelectSender(
+                    interaction=atk_decide_side_map2_interaction
                 )
                 (
                     atk_map3_side,
                     atk_decide_side_map3_interaction,
                 ) = await atk_decide_side_map3_sender.send(
+                    menu_dict=side_dict,
                     title="第3マップが決定しました。",
                     description=f"第3マップ: {selected_map_3}",
                     placeholder="第3マップのサイドを選択してください。",
