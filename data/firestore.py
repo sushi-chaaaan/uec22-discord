@@ -1,11 +1,10 @@
 import traceback
-from typing import Any
+from typing import Any, Optional
+
 import discord
 import firebase_admin
 from discord.ext import commands, tasks
 from firebase_admin import credentials, firestore
-
-from typing import Optional
 
 if not firebase_admin._apps:
     cred = credentials.Certificate(
@@ -40,12 +39,6 @@ def delete_data(collection: str, document: str):
         db.collection(collection).document(document).delete()
     except Exception:
         traceback.print_exc()
-
-
-# print(get_data(collection="role_panel"))
-
-# for num in range(5):
-#     print(num)
 
 
 class FireStoreTask(commands.Cog):
@@ -86,11 +79,3 @@ class FireStoreTask(commands.Cog):
 
 def setup(bot):
     return bot.add_cog(FireStoreTask(bot))
-
-
-"""
-panels = db.collection("role_panel").get()
-for panel in panels:
-    print(panel.to_dict())
-pass
-"""
