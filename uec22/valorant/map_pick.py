@@ -29,7 +29,7 @@ class MapPick(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @slash_command(name="map-pick", guild_ids=[guild_id])
+    @slash_command(name="valorant-pick-map", guild_ids=[guild_id])
     async def _map_pick(
         self,
         ctx: ApplicationContext,
