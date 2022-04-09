@@ -11,9 +11,9 @@ class InteractionSelectSender:
 
     async def send(
         self,
+        *,
         title: Optional[str] = None,
         description: Optional[str] = None,
-        *,
         placeholder: Optional[str] = None,
         min_values: int,
         max_values: int,
