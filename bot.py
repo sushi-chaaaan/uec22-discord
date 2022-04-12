@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
-token = os.getenv("DISCORD_BOT_TOKEN")
+token = "OTUxMTY3NTU0MjUxMDIyMzU2.Yijh0A.5GdqDMFNYsWKNZQbwByWeQ8w_cw"
 
 # Load when start bot
 EXTENSION_LIST = [
@@ -39,10 +39,6 @@ EXTENSION_LIST = [
     "uec22.valorant.map_pick",
 ]
 
-PERSISTENT_VIEWS = [
-    QuestionView(),
-    EnterVerifyView(),
-]
 
 discord.http.API_VERSION = 9
 
@@ -68,6 +64,10 @@ class MyBot(commands.Bot):
 
         # Set View
         if not self.persistent_views_added:
+            PERSISTENT_VIEWS = [
+                QuestionView(),
+                EnterVerifyView(),
+            ]
             for view in PERSISTENT_VIEWS:
                 try:
                     self.add_view(view)
