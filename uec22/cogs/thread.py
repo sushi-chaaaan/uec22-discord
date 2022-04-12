@@ -15,19 +15,25 @@ from discord.ext.ui import (
 )
 from ids import guild_id
 
-thread_log_channel = 954742615008493588
+thread_log_channel = 963399326992846888
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
 
 class Thread(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @commands.Cog.listener(name="on_thread_join")
-    async def detect_thread(self, thread):
-        thread_member_list = await thread.fetch_members()
-        if self.bot.user.id in [x.id for x in thread_member_list]:
+    async def detect_thread(self, thread: discord.Thread):
+        members = await thread.fetch_members()
+        if self.bot.user.id in [x.id for x in members]:
             return
+        embed = self.thread_created(thread)
+        guild = self.bot.get_guild(guild_id)
+        ch = guild.get_channel(thread_log_channel)
+        if not embed or not guild or not isinstance(ch, discord.abc.Messageable):
+            return
+        await ch.send(embed=embed)
 
     @commands.Cog.listener(name="on_thread_update")
     async def detect_archive(self, before, after):
@@ -139,25 +145,31 @@ class Thread(commands.Cog):
         return final_text
 
     @staticmethod
-    async def compose_thread_create_log(thread: discord.Thread):
+    def thread_created(thread: discord.Thread):
         if thread.owner is None or thread.parent is None:
             return
         embed = discord.Embed(
-            title="スレッドが作成されました。",
-            url="",
-            color=3447003,
-            description="",
+            title="New Thread Detected",
+            color=1787875,
             timestamp=datetime.now(timezone.utc),
         )
         embed.set_author(
             name=thread.owner.display_name,
             icon_url=thread.owner.display_avatar.url,
         )
-        embed.add_field(name="作成元チャンネル", value=f"{thread.parent.mention}")
-        embed.add_field(name="作成スレッド", value=f"{thread.mention}")
-        embed.add_field(name="作成者", value=f"{thread.owner.mention}")
+        if thread.is_private:
+            _status = "Private"
+        else:
+            _status = "Public"
+        embed.add_field(name="Status", value=_status)
         embed.add_field(
-            name="作成日時",
+            name="auto_archive_duration", value=thread.auto_archive_duration
+        )
+        embed.add_field(name="parent", value=f"{thread.parent.mention}")
+        embed.add_field(name="thread", value=f"{thread.mention}")
+        embed.add_field(name="owner", value=f"{thread.owner.mention}")
+        embed.add_field(
+            name="created_at",
             value=f"{datetime.now(jst).strftime('%Y/%m/%d %H:%M:%S')}",
         )
         return embed
