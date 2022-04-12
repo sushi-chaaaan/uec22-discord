@@ -2,6 +2,7 @@ import asyncio
 from typing import Optional
 
 import discord
+from discord.ui import InputText, Modal
 
 
 class SelectSender:
@@ -18,6 +19,7 @@ class SelectSender:
         min_values: int,
         max_values: int,
         ephemeral: bool = False,
+        deffered: bool,
     ) -> tuple[list[str], discord.Interaction]:
         _future = asyncio.Future()
         embed = discord.Embed(
@@ -31,6 +33,7 @@ class SelectSender:
             min_values=min_values,
             max_values=max_values,
             future=_future,
+            deferred=deffered,
         )
         await self.respond(embeds=[embed], view=view, ephemeral=ephemeral)
         await _future
@@ -45,6 +48,7 @@ class SelectSender:
         min_values: int,
         max_values: int,
         future: asyncio.Future,
+        deferred: bool,
     ) -> discord.ui.View:
         view = discord.ui.View(timeout=None)
         options: list[discord.SelectOption] = []
@@ -53,6 +57,7 @@ class SelectSender:
             options.append(opt)
         select = _Select(
             future=future,
+            deferred=deferred,
             placeholder=placeholder,
             options=options,
             min_values=min_values,
@@ -74,6 +79,7 @@ class _Select(discord.ui.Select):
         self,
         *,
         future: asyncio.Future,
+        deferred: bool,
         placeholder: Optional[str] = None,
         min_values: int,
         max_values: int,
@@ -86,7 +92,74 @@ class _Select(discord.ui.Select):
             options=options,
         )
         self.future = future
+        self.deferred = deferred
 
     async def callback(self, interaction: discord.Interaction):
         self.future.set_result((self.values, interaction))
+        if self.deferred:
+            await interaction.response.defer()
+
+
+class ModalSender:
+    def __init__(self, interaction: discord.Interaction):
+        self._interaction = interaction
+
+    async def send(
+        self,
+        modal_list: list[dict],
+        *,
+        title: str,
+        custom_id: Optional[str] = None,
+    ) -> tuple[list[str], discord.Interaction]:
+        _future = asyncio.Future()
+        await self.respond(
+            _Modal(future=_future, dicts=modal_list, title=title, custom_id=custom_id)
+        )
+        await _future
+        if _future.done():
+            if _future.result() is not None:
+                return _future.result()
+            raise asyncio.InvalidStateError("Modal was cancelled.")
+
+    @property
+    def respond(self):
+        if self._interaction.response.is_done():
+            raise discord.InteractionResponded(self._interaction)
+        else:
+            return self._interaction.response.send_modal
+
+
+class _Modal(Modal):
+    def __init__(
+        self,
+        dicts: list[dict],
+        future: asyncio.Future,
+        title: str,
+        custom_id: Optional[str] = None,
+    ) -> None:
+        super().__init__(title, custom_id)
+        for dict in dicts:
+            label = dict["label"]
+            if dict["short"]:
+                style = discord.InputTextStyle.short
+            else:
+                style = discord.InputTextStyle.paragraph
+            required = dict["required"]
+            row = dict["row"]
+            value = dict["value"]
+            self.add_item(
+                InputText(
+                    label=label,
+                    style=style,
+                    required=required,
+                    row=row,
+                    value=value,
+                )
+            )
+        self.future = future
+        self.length = len(dicts)
+
+    async def callback(self, interaction: discord.Interaction):
+        values = [self.children[i].value for i in range(self.length)]
+        self.future.set_result((values, interaction))
         await interaction.response.defer()
