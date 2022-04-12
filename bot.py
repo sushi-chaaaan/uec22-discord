@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
-token = "OTUxMTY3NTU0MjUxMDIyMzU2.Yijh0A.5GdqDMFNYsWKNZQbwByWeQ8w_cw"
+token = ""
 
 # Load when start bot
 EXTENSION_LIST = [
