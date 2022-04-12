@@ -42,7 +42,7 @@ EXTENSION_LIST = [
 discord.http.API_VERSION = 9
 
 # Intent
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 intents.typing = False
 
 
