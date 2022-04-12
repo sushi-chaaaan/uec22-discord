@@ -157,13 +157,15 @@ class Thread(commands.Cog):
             name=thread.owner.display_name,
             icon_url=thread.owner.display_avatar.url,
         )
-        if thread.is_private:
+        if thread.is_private():
             _status = "Private"
         else:
             _status = "Public"
-        embed.add_field(name="Status", value=_status)
+        embed.add_field(name="Status", value=_status, inline=False)
         embed.add_field(
-            name="auto_archive_duration", value=thread.auto_archive_duration
+            name="auto_archive_duration",
+            value=thread.auto_archive_duration,
+            inline=False,
         )
         embed.add_field(name="parent", value=f"{thread.parent.mention}")
         embed.add_field(name="thread", value=f"{thread.mention}")
