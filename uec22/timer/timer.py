@@ -1,3 +1,5 @@
+import asyncio
+
 import discord
 from discord.commands import slash_command
 from discord.ext import commands
@@ -49,6 +51,9 @@ class Timer(commands.Cog):
             timer_length = int(values[0])
         else:
             timer_length = int(res)
+
+        # set timer.
+        await asyncio.sleep(timer_length)
 
         # timer_length: 秒単位の数値
 
