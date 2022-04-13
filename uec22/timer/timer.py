@@ -3,7 +3,6 @@ import traceback
 from typing import Optional
 
 import discord
-from aiohttp import content_disposition_filename
 from discord.commands import slash_command
 from discord.ext import commands
 from ids import guild_id
@@ -79,14 +78,14 @@ class Timer(commands.Cog):
         if not user or not isinstance(user, discord.Member):
             return
         vc_state: Optional[discord.VoiceState] = user.voice
-        
+
         # reject if user not in vc
         if not vc_state:
             await ctx.respond(
                 content="ボイスチャットに参加した状態でないと、このコマンドは使用できません。", ephemeral=True
             )
             return
-        
+
         # configure timer
 
 
