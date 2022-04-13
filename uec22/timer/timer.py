@@ -1,4 +1,5 @@
 import asyncio
+import traceback
 
 import discord
 from discord.commands import slash_command
@@ -30,7 +31,13 @@ class Timer(commands.Cog):
 
     @slash_command(name="timer", guild_ids=guild_id)
     async def _timer(self, ctx: discord.ApplicationContext):
+        # get param
         interaction = ctx.interaction
+        user = ctx.interaction.user
+        channel = ctx.interaction.channel
+        if not user or not isinstance(channel,discord.abc.Messageable):
+            return
+        # Send select and determine timer length
         sender = SelectSender(interaction)
         res, res_interaction = await sender.send(
             menu_dict=mode_dict,
@@ -56,6 +63,11 @@ class Timer(commands.Cog):
         await asyncio.sleep(timer_length)
 
         # timer_length: 秒単位の数値
+        text = f"{user.mention}さん\nタイマーで設定した時間が経過しました。"
+        try:
+            await channel.send(content=text)
+        except Exception:
+            traceback.print_exc()
 
 
 def setup(bot):
