@@ -1,7 +1,9 @@
 import asyncio
 import traceback
+from typing import Optional
 
 import discord
+from aiohttp import content_disposition_filename
 from discord.commands import slash_command
 from discord.ext import commands
 from ids import guild_id
@@ -29,7 +31,7 @@ class Timer(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @slash_command(name="timer", guild_ids=guild_id)
+    @slash_command(name="timer", guild_ids=[guild_id])
     async def _timer(self, ctx: discord.ApplicationContext):
         # get param
         interaction = ctx.interaction
@@ -68,6 +70,24 @@ class Timer(commands.Cog):
             await channel.send(content=text)
         except Exception:
             traceback.print_exc()
+
+    @slash_command(name="timer-voice", guild_ids=[guild_id])
+    async def _timer_voice(self, ctx: discord.ApplicationContext):
+        # get param
+        interaction = ctx.interaction
+        user = ctx.interaction.user
+        if not user or not isinstance(user, discord.Member):
+            return
+        vc_state: Optional[discord.VoiceState] = user.voice
+        
+        # reject if user not in vc
+        if not vc_state:
+            await ctx.respond(
+                content="ボイスチャットに参加した状態でないと、このコマンドは使用できません。", ephemeral=True
+            )
+            return
+        
+        # configure timer
 
 
 def setup(bot):
