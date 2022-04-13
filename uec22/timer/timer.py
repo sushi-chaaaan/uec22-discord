@@ -35,7 +35,7 @@ class Timer(commands.Cog):
         interaction = ctx.interaction
         user = ctx.interaction.user
         channel = ctx.interaction.channel
-        if not user or not isinstance(channel,discord.abc.Messageable):
+        if not user or not isinstance(channel, discord.abc.Messageable):
             return
         # Send select and determine timer length
         sender = SelectSender(interaction)
