@@ -96,7 +96,9 @@ class _Select(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         self.future.set_result((self.values, interaction))
-        if self.deferred:
+        if not self.deferred:
+            pass
+        else:
             await interaction.response.defer()
 
 
