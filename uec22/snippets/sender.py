@@ -27,7 +27,7 @@ class SelectSender:
             description=description,
             color=1787875,
         )
-        view = self.generate_selectview(
+        view = _SelectView(
             menu_dict=menu_dict,
             placeholder=placeholder,
             min_values=min_values,
@@ -40,17 +40,25 @@ class SelectSender:
         if _future.done():
             return _future.result()
 
-    def generate_selectview(
+    @property
+    def respond(self):
+        if not self._interaction.response.is_done():
+            return self._interaction.response.send_message
+        else:
+            return self._interaction.followup.send
+
+
+class _SelectView(discord.ui.View):
+    def __init__(
         self,
         menu_dict: dict[str, str],
-        *,
         placeholder: Optional[str],
         min_values: int,
         max_values: int,
         future: asyncio.Future,
         deferred: bool,
-    ) -> discord.ui.View:
-        view = discord.ui.View(timeout=None)
+    ):
+        super().__init__(timeout=None)
         options: list[discord.SelectOption] = []
         for key, value in menu_dict.items():
             opt = discord.SelectOption(label=value, value=key)
@@ -63,15 +71,10 @@ class SelectSender:
             min_values=min_values,
             max_values=max_values,
         )
-        view.add_item(select)
-        return view
+        self.add_item(select)
 
-    @property
-    def respond(self):
-        if not self._interaction.response.is_done():
-            return self._interaction.response.send_message
-        else:
-            return self._interaction.followup.send
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        return False
 
 
 class _Select(discord.ui.Select):
