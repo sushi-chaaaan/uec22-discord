@@ -38,29 +38,15 @@ class Timer(commands.Cog):
         channel = ctx.interaction.channel
         if not user or not isinstance(channel, discord.abc.Messageable):
             return
-        # Send select and determine timer length
-        sender = SelectSender(interaction)
-        res, res_interaction = await sender.send(
-            menu_dict=mode_dict,
-            title="タイマーの長さを選択してください。",
-            min_values=1,
-            max_values=1,
-            ephemeral=True,
-            deffered=False,
-        )
-        res = res[0]
-        if res == "other":
-            sender = ModalSender(res_interaction)
-            values, modal_interaction = await sender.send(
-                modal_list=modal_dict,
-                title="タイマーの長さを選択してください。(単位: 秒)",
-                custom_id="timer_modal",
-            )
-            timer_length = int(values[0])
-        else:
-            timer_length = int(res)
 
-        # set timer.
+        # get timer
+        timer_length = await self.get_timer_length(interaction)
+
+        # set timer
+        if not timer_length or not isinstance(timer_length, float):
+            return
+
+        # exe timer
         await asyncio.sleep(timer_length)
 
         # timer_length: 秒単位の数値
@@ -87,6 +73,33 @@ class Timer(commands.Cog):
             return
 
         # configure timer
+        timer_length = await self.get_timer_length(interaction)
+        if not timer_length or not isinstance(timer_length, float):
+            return
+
+    async def get_timer_length(self, interaction: discord.Interaction) -> float:
+        # Send select and determine timer length
+        sender = SelectSender(interaction)
+        res, res_interaction = await sender.send(
+            menu_dict=mode_dict,
+            title="タイマーの長さを選択してください。",
+            min_values=1,
+            max_values=1,
+            ephemeral=True,
+            deffered=False,
+        )
+        res = res[0]
+        if res == "other":
+            sender = ModalSender(res_interaction)
+            values, modal_interaction = await sender.send(
+                modal_list=modal_dict,
+                title="タイマーの長さを選択してください。(単位: 秒)",
+                custom_id="timer_modal",
+            )
+            timer_length = float(values[0])
+        else:
+            timer_length = float(res)
+        return timer_length
 
 
 def setup(bot):
