@@ -35,6 +35,7 @@ EXTENSION_LIST = [
     "uec22.cogs.utils",
     "uec22.genshin.connect_id",
     "uec22.role_panel.role_panel",
+    "uec22.timer.timer",
     "uec22.valorant.map_pick",
 ]
 
