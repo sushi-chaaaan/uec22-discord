@@ -5,6 +5,7 @@ import discord
 from discord.commands import slash_command
 from discord.ext import commands
 from ids import guild_id
+from test_md import md2html_md_to_pdf
 
 
 class MarkdownPDF(commands.Cog):
@@ -24,17 +25,12 @@ class MarkdownPDF(commands.Cog):
         await ctx.defer()
         print(attachment.filename)
         await attachment.save(f"tmp/{attachment.filename}")
-        result = self.convert_md_to_pdf(f"tmp/{attachment.filename}")
-        status = True if result.returncode == 0 else False
-        if not status:
-            await ctx.respond(f"{result.args}の実行に失敗しました\n\n{result.stdout}")
+        pure_name = attachment.filename.removesuffix(".md")
+        result = md2html_md_to_pdf(f"tmp/{attachment.filename}")
+        if not result:
+            await ctx.respond("実行に失敗しました")
             return
-
-    def convert_md_to_pdf(self, filename: str) -> CompletedProcess:
-        pure_name = filename.removesuffix(".md")
-        return subprocess.run(
-            f"npx markdown-pdf {filename} -o {pure_name}.pdf -s styles/github-markdown.css",
-        )
+        await ctx.respond(f"{pure_name}.pdfを作成しました。", file=discord.File(result))
 
 
 def setup(bot):
