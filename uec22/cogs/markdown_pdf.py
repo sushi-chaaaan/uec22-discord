@@ -25,8 +25,10 @@ class MarkdownPDF(commands.Cog):
         print(attachment.filename)
         await attachment.save(f"tmp/{attachment.filename}")
         result = self.convert_md_to_pdf(f"tmp/{attachment.filename}")
-        status = "成功" if result.returncode == 0 else "失敗"
-        await ctx.respond(f"{result.args}の実行に{status}しました\n\n{result.stdout}")
+        status = True if result.returncode == 0 else False
+        if not status:
+            await ctx.respond(f"{result.args}の実行に失敗しました\n\n{result.stdout}")
+            return
 
     def convert_md_to_pdf(self, filename: str) -> CompletedProcess:
         pure_name = filename.removesuffix(".md")
