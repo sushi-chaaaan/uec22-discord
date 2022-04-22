@@ -1,28 +1,20 @@
 import subprocess
+import json
 
 
-def md2html(filename: str):
+def md2html_md_to_pdf(filename: str):
     pure_name = filename.removesuffix(".md")
+    pdf_opt = '{\"format\": \"A4\", \"margin\": \"20mm\", \"printBackground\": true}'
+    pdt_json = json.dumps(pdf_opt)
     subprocess.run(
-        f"pandoc -s -o {pure_name}.html --mathjax -c styles/github-markdown.css {filename}",
+        f"npx md-to-pdf --stylesheet styles/github-markdown.css --highlight-style github --pdf-options {pdt_json} {filename}",
         shell=True,
     )
-    return f"{pure_name}.html"
-
-
-def html2pdf(filename: str):
-    pure_name = filename.removesuffix(".html")
-    subprocess.run(
-        f"wkhtmltopdf --disable-smart-shrinking --margin-top 20 --margin-left 20 --margin-right 20 --margin-bottom 20 --footer-center '[page]/[topage]' {filename} {pure_name}.pdf",
-        shell=True,
-    )
-    return f"{pure_name}.pdf"
+    return
 
 
 def main():
-    html = md2html("tmp/report_2.md")
-    pdf = html2pdf(html)
-    print(pdf)
+    md2html_md_to_pdf("tmp/report_2.md")
 
 
 if __name__ == "__main__":
