@@ -1,5 +1,4 @@
 import subprocess
-from pathlib import Path
 from subprocess import CompletedProcess
 
 import discord
