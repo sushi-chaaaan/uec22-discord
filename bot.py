@@ -26,7 +26,7 @@ EXTENSION_LIST = [
     "uec22.cogs.entrance",
     "uec22.cogs.error",
     "uec22.cogs.forum",
-    "uec22.cogs.markdown2pdf",
+    # "uec22.cogs.markdown_pdf",
     "uec22.cogs.mem_count",
     "uec22.cogs.message",
     "uec22.cogs.pin",

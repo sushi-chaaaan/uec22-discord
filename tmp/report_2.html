@@ -1,22 +1,14 @@
-
-# コンピュータリテラシレポート #02  
-
-学籍番号:2210342  
-氏名:鈴木謙太郎  
-提出日付: 2022.04.18(月)  
-
-```
-await hogehoge()
-```
-
-# 演習2a
-
-今回はブラジルの25%の電力を供給していると言われている  
-イタイプ・ダム(ブラジルは世界有数の水力発電国家)の  
-公式サイトにpingを行う。
-
-```shell
-sushi@sushiDAIV:~$ ping itaipu.gov.br
+<h1>コンピュータリテラシレポート #02</h1>
+<p>学籍番号:2210342<br />
+氏名:鈴木謙太郎<br />
+提出日付: 2022.04.18(月)</p>
+<pre><code class="language-python">await hogehoge()
+</code></pre>
+<h1>演習2a</h1>
+<p>今回はブラジルの25%の電力を供給していると言われている<br />
+イタイプ・ダム(ブラジルは世界有数の水力発電国家)の<br />
+公式サイトにpingを行う。</p>
+<pre><code class="language-shell">sushi@sushiDAIV:~$ ping itaipu.gov.br
 PING itaipu.gov.br (45.235.19.10) 56(84) bytes of data.
 64 bytes from 45.235.19.10 (45.235.19.10): icmp_seq=1 ttl=225 time=333 ms
 64 bytes from 45.235.19.10 (45.235.19.10): icmp_seq=2 ttl=225 time=370 ms
@@ -25,15 +17,11 @@ PING itaipu.gov.br (45.235.19.10) 56(84) bytes of data.
 --- itaipu.gov.br ping statistics ---
 4 packets transmitted, 3 received, 25% packet loss, time 5604ms
 rtt min/avg/max/mdev = 333.496/346.786/369.519/16.151 ms
-```
-
-さすが光の速さ、地球の裏側まででも概ね400ms以内に  
-応答が帰ってきている。
-
-今回は追加でtracerouteも行う。
-
-```shell
-sushi@sushiDAIV:~$ traceroute www.itaipu.gov.br
+</code></pre>
+<p>さすが光の速さ、地球の裏側まででも概ね400ms以内に<br />
+応答が帰ってきている。</p>
+<p>今回は追加でtracerouteも行う。</p>
+<pre><code class="language-shell">sushi@sushiDAIV:~$ traceroute www.itaipu.gov.br
 traceroute to www.itaipu.gov.br (45.235.19.10), 30 hops max, 60 byte packets
  1  sushiDAIV (192.168.128.1)  0.249 ms  0.211 ms  0.205 ms
  2  172.20.10.1 (172.20.10.1)  9.616 ms  9.610 ms  9.605 ms
@@ -65,92 +53,65 @@ traceroute to www.itaipu.gov.br (45.235.19.10), 30 hops max, 60 byte packets
 28  * * *
 29  177.3.184.106 (177.3.184.106)  469.401 ms  469.398 ms  469.394 ms
 30  * * *
-```
-
-少々長くなってしまったが、スマートフォンのテザリングを使用して行ったため、  
-途中まではSoftBankのサーバーを経由している。  
-その後、どうやら日本の外にあるらしいSoftBankのサーバー(11)を経由して、  
-アメリカにある光ファイバー企業のサーバーを経由してブラジルまで接続しているようだ。  
-地球全域をカバーするネットワークが大きいことは理解していたが、  
-経由するサーバーの数が30近いのを見るとその規模を改めて実感する。
-
-# 演習2b
-
-ここでは、世界各地でサービスを展開するAmazonの各国のサイトへpingを  
-送信することで世界の複数地域までのパケットの往復時間を調べる。
-
-## 各リージョンにpingした結果
-
-```shell
-[JAPAN]
+</code></pre>
+<p>少々長くなってしまったが、スマートフォンのテザリングを使用して行ったため、<br />
+途中まではSoftBankのサーバーを経由している。<br />
+その後、どうやら日本の外にあるらしいSoftBankのサーバー(11)を経由して、<br />
+アメリカにある光ファイバー企業のサーバーを経由してブラジルまで接続しているようだ。<br />
+地球全域をカバーするネットワークが大きいことは理解していたが、<br />
+経由するサーバーの数が30近いのを見るとその規模を改めて実感する。</p>
+<h1>演習2b</h1>
+<p>ここでは、世界各地でサービスを展開するAmazonの各国のサイトへpingを<br />
+送信することで世界の複数地域までのパケットの往復時間を調べる。</p>
+<h2>各リージョンにpingした結果</h2>
+<pre><code class="language-shell">[JAPAN]
 sushi@DESKTOP-IVPQOIS:~$ ping amazon.co.jp
 PING amazon.co.jp (52.119.164.121) 56(84) bytes of data.
 64 bytes from 52.119.164.121 (52.119.164.121): icmp_seq=1 ttl=232 time=127 ms
-```
-
-```shell
-[AMERICA]
+</code></pre>
+<pre><code class="language-shell">[AMERICA]
 sushi@DESKTOP-IVPQOIS:~$ ping amazon.com
 PING amazon.com (54.239.28.85) 56(84) bytes of data.
 64 bytes from 54.239.28.85 (54.239.28.85): icmp_seq=1 ttl=226 time=169 ms
-```
-
-```shell
-[BRAZIL]
+</code></pre>
+<pre><code class="language-shell">[BRAZIL]
 sushi@DESKTOP-IVPQOIS:~$ ping amazon.com.br
 PING amazon.com.br (54.239.26.87) 56(84) bytes of data.
 64 bytes from 54.239.26.87 (54.239.26.87): icmp_seq=1 ttl=228 time=171 ms
-```
-
-```shell
-[NETHERLAND]
+</code></pre>
+<pre><code class="language-shell">[NETHERLAND]
 sushi@DESKTOP-IVPQOIS:~$ ping amazon.nl
 PING amazon.nl (52.95.120.64) 56(84) bytes of data.
 64 bytes from 52.95.120.64 (52.95.120.64): icmp_seq=1 ttl=223 time=251 ms
-```
-
-## 考察
-
-驚いたのは、北米のAmazonとブラジルのAmazonへの所要到達時間がほぼ同じであることである。  
-tracerouteを使ったところ、両者の経路はまったく異なっていたので、太平洋にケーブルが敷かれているのだろう。  
-また、距離的にはブラジルより近いはずのオランダのAmazonの方が、到達時間が長いので  
-ヨーロッパ方面へのネットワークは存外不便なのかもしれない。  
-
-実際に[世界のインターネットの大まかな配置](https://www.submarinecablemap.com/)を見てみると、ヨーロッパ方面へのアクセスはかなり遠回りをしているように見えるため、  
-結果的に物理的はより近いのに、pingに要する時間が長いという逆転現象が起きていると思われる。  
-
-# 演習2c
-
-[演習2b](#演習2b)は、当初世界各国のGoogleにアクセスしてpingを測定する予定だった。  
-しかしながら、下のコードブロックのように、
-
-```shell
-[JAPAN]
+</code></pre>
+<h2>考察</h2>
+<p>驚いたのは、北米のAmazonとブラジルのAmazonへの所要到達時間がほぼ同じであることである。<br />
+tracerouteを使ったところ、両者の経路はまったく異なっていたので、太平洋にケーブルが敷かれているのだろう。<br />
+また、距離的にはブラジルより近いはずのオランダのAmazonの方が、到達時間が長いので<br />
+ヨーロッパ方面へのネットワークは存外不便なのかもしれない。</p>
+<p>実際に<a href="https://www.submarinecablemap.com/">世界のインターネットの大まかな配置</a>を見てみると、ヨーロッパ方面へのアクセスはかなり遠回りをしているように見えるため、<br />
+結果的に物理的はより近いのに、pingに要する時間が長いという逆転現象が起きていると思われる。</p>
+<h1>演習2c</h1>
+<p><a href="#%E6%BC%94%E7%BF%922b">演習2b</a>は、当初世界各国のGoogleにアクセスしてpingを測定する予定だった。<br />
+しかしながら、下のコードブロックのように、</p>
+<pre><code class="language-shell">[JAPAN]
 sushi@DESKTOP-IVPQOIS:~$ ping google.co.jp
 PING google.co.jp (172.217.161.35) 56(84) bytes of data.
 64 bytes from nrt12s23-in-f3.1e100.net (172.217.161.35): icmp_seq=1 ttl=114 time=3.25 ms
-```
-
-```shell
-[BRAZIL]
+</code></pre>
+<pre><code class="language-shell">[BRAZIL]
 sushi@DESKTOP-IVPQOIS:~$ ping google.com.br
 PING google.com.br (172.217.175.99) 56(84) bytes of data.
 64 bytes from nrt20s21-in-f3.1e100.net (172.217.175.99): icmp_seq=1 ttl=112 time=4.96 ms
-```
-
-日本のGoogleとブラジルのGoogleの両方にpingを送った結果、ほぼ同じ結果だった。  
-tracerouteを使ったところ、両者のたどるIPアドレスが末尾のみ違う、のような状態なので、  
-おそらくGoogleなどの非常にトラフィックが多いサイトはCDNを使っていて、  
-日本のキャッシュサーバーにキャッシュが乗っているものと考えられる。
-
-# 演習4
-
-演習2で複数回tracerouteを実行しているので省略する。
-
-# 演習4a
-
-```shell
-[GOOGLE]
+</code></pre>
+<p>日本のGoogleとブラジルのGoogleの両方にpingを送った結果、ほぼ同じ結果だった。<br />
+tracerouteを使ったところ、両者のたどるIPアドレスが末尾のみ違う、のような状態なので、<br />
+おそらくGoogleなどの非常にトラフィックが多いサイトはCDNを使っていて、<br />
+日本のキャッシュサーバーにキャッシュが乗っているものと考えられる。</p>
+<h1>演習4</h1>
+<p>演習2で複数回tracerouteを実行しているので省略する。</p>
+<h1>演習4a</h1>
+<pre><code class="language-shell">[GOOGLE]
 sushi@DESKTOP-IVPQOIS:~$ traceroute google.co.jp
 traceroute to google.co.jp (172.217.161.35), 30 hops max, 60 byte packets
  1  DESKTOP-IVPQOIS (172.29.16.1)  0.133 ms  0.117 ms  0.112 ms
@@ -166,10 +127,8 @@ traceroute to google.co.jp (172.217.161.35), 30 hops max, 60 byte packets
 11  142.250.226.58 (142.250.226.58)  4.529 ms 108.170.242.193 (108.170.242.193)  8.177 ms  5.413 ms
 12  108.170.242.209 (108.170.242.209)  5.296 ms 108.170.242.176 (108.170.242.176)  4.966 ms 108.170.242.177 (108.170.242.177)  3.651 ms
 13  209.85.246.83 (209.85.246.83)  3.980 ms nrt12s23-in-f3.1e100.net (172.217.161.35)  3.913 ms  3.621 ms
-```
-
-```shell
-[KANTEI]
+</code></pre>
+<pre><code class="language-shell">[KANTEI]
 sushi@DESKTOP-IVPQOIS:~$ traceroute kantei.go.jp
 traceroute to kantei.go.jp (13.249.150.75), 30 hops max, 60 byte packets
  1  DESKTOP-IVPQOIS (172.29.16.1)  0.142 ms  0.126 ms  0.120 ms
@@ -192,16 +151,12 @@ traceroute to kantei.go.jp (13.249.150.75), 30 hops max, 60 byte packets
 18  * * *
 19  * * *
 20  server-13-249-150-75.nrt51.r.cloudfront.net (13.249.150.75)  12.276 ms  11.188 ms  11.308 ms
-```
-
-上はgoogle.co.jpへのtracerouteで、下は[首相官邸ホームページ](https://www.kantei.go.jp/)へのtracerouteの結果である。  
-途中の六個目のサーバーまではまったく同じものを経由しているので、おそらく日本国内のネットワークの  
-集権的なサーバーをKDDIが運用しているのだろう。
-
-# 演習4b
-
-```shell
-sushi@DESKTOP-IVPQOIS:~$ traceroute www.itaipu.gov.br
+</code></pre>
+<p>上はgoogle.co.jpへのtracerouteで、下は<a href="https://www.kantei.go.jp/">首相官邸ホームページ</a>へのtracerouteの結果である。<br />
+途中の六個目のサーバーまではまったく同じものを経由しているので、おそらく日本国内のネットワークの<br />
+集権的なサーバーをKDDIが運用しているのだろう。</p>
+<h1>演習4b</h1>
+<pre><code class="language-shell">sushi@DESKTOP-IVPQOIS:~$ traceroute www.itaipu.gov.br
 traceroute to www.itaipu.gov.br (45.235.19.10), 30 hops max, 60 byte packets
  1  DESKTOP-IVPQOIS (172.29.16.1)  0.184 ms  0.168 ms  0.162 ms
  2  RT-AX56U-FF98 (192.168.50.1)  1.304 ms  1.465 ms  0.827 ms
@@ -233,17 +188,13 @@ traceroute to www.itaipu.gov.br (45.235.19.10), 30 hops max, 60 byte packets
 28  * * *
 29  * * *
 30  * * *
-```
-
-これは、[演習2a](#演習2a)で、SoftBank回線のテザリングを経由してtracebackを十個スチアブラジルのダムに、  
-自宅の回線からtracerouteを実行した結果である。見比べたところ、まったく違うものを経由している。  
-
-# 演習4c
-
-# 演習5
-
-私は自分で`sushichan.live` というドメインを取得している。  
-今現在は外部向けにサービスを公開していないが、以前はゲームサーバー  
-などを外部に公開していた。  
-このドメインは現在CloudFlareのレジストラで取得されている。  
-維持費は$17.68/年となっている。  
+</code></pre>
+<p>これは、<a href="#%E6%BC%94%E7%BF%922a">演習2a</a>で、SoftBank回線のテザリングを経由してtracebackを十個スチアブラジルのダムに、<br />
+自宅の回線からtracerouteを実行した結果である。見比べたところ、まったく違うものを経由している。</p>
+<h1>演習4c</h1>
+<h1>演習5</h1>
+<p>私は自分で<code>sushichan.live</code> というドメインを取得している。<br />
+今現在は外部向けにサービスを公開していないが、以前はゲームサーバー<br />
+などを外部に公開していた。<br />
+このドメインは現在CloudFlareのレジストラで取得されている。<br />
+維持費は$17.68/年となっている。</p>
