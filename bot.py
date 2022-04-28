@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 import traceback
 from datetime import datetime, timedelta, timezone
@@ -6,6 +7,7 @@ from typing import Any, Optional
 
 import discord
 from discord.ext import commands
+from dotenv import load_dotenv
 
 from data.firestore import get_data
 from ids import guild_id, su_role
@@ -13,12 +15,14 @@ from uec22.cogs.entrance import EnterVerifyView
 from uec22.cogs.forum import QuestionView
 from uec22.role_panel.panel_db import set_board
 
+load_dotenv()
+
 logging.basicConfig(level=logging.INFO)
 
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
-token = ""
+token = os.environ["DISCORD_TOKEN"]
 
 # Load when start bot
 EXTENSION_LIST = [
