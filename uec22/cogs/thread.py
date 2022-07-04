@@ -5,14 +5,9 @@ import discord
 from discord import ApplicationContext, Option
 from discord.commands import slash_command
 from discord.ext import commands
-from discord.ext.ui import (
-    InteractionProvider,
-    Message,
-    PageView,
-    PaginationView,
-    View,
-    ViewTracker,
-)
+from discord.ext.ui import (InteractionProvider, Message, PageView,
+                            PaginationView, View, ViewTracker)
+
 from ids import guild_id
 
 thread_log_channel = 963399326992846888

@@ -3,7 +3,6 @@ from typing import Optional
 
 import discord
 
-
 # 基本的に await asyncio.Future()な形で運用する前提です。ボタンはbool(承認/非承認結果)とinteractionオブジェクトのタプルを返します。
 # 基本的にConfirmViewをそのままつかってください
 

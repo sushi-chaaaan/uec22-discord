@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands, tasks
+
 from ids import guild_id
 
 count_vc = 959628458718289961

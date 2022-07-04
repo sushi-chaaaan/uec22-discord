@@ -13,6 +13,7 @@ newdispanderfixed = "^0.1.5"
 numpy = "^1.23.0"
 pandas = "^1.4.3"
 py-cord = "2.0.0b5"
+python-dotenv = "^0.20.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.6.0"

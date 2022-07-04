@@ -1,6 +1,7 @@
 import discord
 from discord.commands import message_command
 from discord.ext import commands
+
 from ids import guild_id
 
 # PollEmoji
