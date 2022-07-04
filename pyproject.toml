@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "uec22-discord"
+version = "0.1.0"
+description = ""
+authors = ["sushi-chaaaan <sushi_code@outlook.jp>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+discord-ext-ui = "^3.1.9"
+google-api-python-client = "^2.52.0"
+firebase-admin = "^5.2.0"
+newdispanderfixed = "^0.1.5"
+numpy = "^1.23.0"
+pandas = "^1.4.3"
+py-cord = "2.0.0b5"
+
+[tool.poetry.dev-dependencies]
+black = "^22.6.0"
+flake8 = "^4.0.1"
+isort = "^5.10.1"
+mypy = "^0.961"
+pip-autoremove = "^0.10.0"
+pipdeptree = "^2.2.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
